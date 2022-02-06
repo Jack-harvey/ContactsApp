@@ -15,9 +15,8 @@ namespace ContactsApp.Models
         public DateTime? Birthday { get; set; }
         public string? Picture { get; set; }
         public string? Notes { get; set; }
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; }
 
-        //public virtual Category? Category { get; set; }
-        public virtual Category Category { get; set; } = null!;
+        public virtual Category? Category { get; set; }
     }
 }
