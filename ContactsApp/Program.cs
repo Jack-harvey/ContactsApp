@@ -1,4 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ContactsApp.Data.ContactsAppDataContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("dbConnection"));
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -17,7 +24,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+{ }
 app.UseAuthorization();
 
 app.MapControllerRoute(

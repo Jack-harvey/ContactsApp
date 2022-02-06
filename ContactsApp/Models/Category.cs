@@ -13,6 +13,7 @@ namespace ContactsApp.Models
         public int CategoryId { get; set; }
         public string Description { get; set; } = null!;
 
+
         public virtual ICollection<Contact> Contacts { get; set; }
     }
 }
