@@ -37,6 +37,7 @@ namespace ContactsApp.Controllers
 
             var contact = await _context.Contacts
                 .Include(c => c.Category)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ContactId == id);
             if (contact == null)
             {
@@ -58,15 +59,28 @@ namespace ContactsApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ContactId,Firstname,Lastname,Company,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact)
+        public async Task<IActionResult> Create(
+            [Bind("Firstname,Lastname,Company,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact)
         {
-            if (ModelState.IsValid)
+            try
             {
-                contact.ContactId = Guid.NewGuid();
-                _context.Add(contact);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    contact.ContactId = Guid.NewGuid();
+                    _context.Add(contact);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
             }
+            catch (DbUpdateException dbUpdateExceptionHOWDOILOGTHIS)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
+            }
+
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", contact.CategoryId);
             return View(contact);
         }
@@ -94,6 +108,7 @@ namespace ContactsApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("ContactId,Firstname,Lastname,Company,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact)
+
         {
             if (id != contact.ContactId)
             {
@@ -125,7 +140,7 @@ namespace ContactsApp.Controllers
         }
 
         // GET: Contacts/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid? id, bool? saveChangesError = false)
         {
             if (id == null)
             {
@@ -133,11 +148,19 @@ namespace ContactsApp.Controllers
             }
 
             var contact = await _context.Contacts
+                .AsNoTracking()
                 .Include(c => c.Category)
                 .FirstOrDefaultAsync(m => m.ContactId == id);
             if (contact == null)
             {
                 return NotFound();
+            }
+
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewData["ErrorMessage"] =
+                    "Delete failed. Try again, and if the problem persists " +
+                    "see your system administrator.";
             }
 
             return View(contact);
@@ -149,9 +172,23 @@ namespace ContactsApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var contact = await _context.Contacts.FindAsync(id);
-            _context.Contacts.Remove(contact);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            if (contact == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                _context.Contacts.Remove(contact);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+            }
         }
 
         private bool ContactExists(Guid id)
