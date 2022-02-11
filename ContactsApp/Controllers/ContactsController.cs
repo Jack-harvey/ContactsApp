@@ -21,10 +21,45 @@ namespace ContactsApp.Controllers
         }
 
         // GET: Contacts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var contactsAppDataContext = _context.Contacts.Include(c => c.Category);
-            return View(await contactsAppDataContext.ToListAsync());
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
+            ViewData["BirthDateSortParm"] = sortOrder == "Birthdate" ? "Birthdate_desc" : "Birthdate";
+            ViewData["CompanySortParm"] = sortOrder == "Company" ? "Company_desc" : "Company";
+            ViewData["CategoryIdSortParm"] = sortOrder == "Category" ? "Category_desc" : "Category";
+
+
+            var contacts = from c in _context.Contacts
+                           select c;
+            switch (sortOrder)
+            {
+                case "Name_desc":
+                    contacts = contacts.OrderByDescending(c => c.Lastname);
+                    break;
+
+                case "Birthdate":
+                    contacts = contacts.OrderBy(c => c.Birthday);
+                    break;
+                case "Birthdate_desc":
+                    contacts = contacts.OrderByDescending(c => c.Birthday);
+                    break;
+                case "Company":
+                    contacts = contacts.OrderBy(c => c.Company);
+                    break;
+                case "Company_desc":
+                    contacts = contacts.OrderByDescending(c => c.Company);
+                    break;
+                case "Category":
+                    contacts = contacts.OrderBy(c => c.Category.Description);
+                    break;
+                case "Category_desc":
+                    contacts = contacts.OrderByDescending(c => c.Category.Description);
+                    break;
+                default:
+                    contacts = contacts.OrderBy(c => c.Lastname);
+                    break;
+            }    
+            return View(await contacts.AsNoTracking().ToListAsync());
         }
 
         // GET: Contacts/Details/5
