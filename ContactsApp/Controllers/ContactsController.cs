@@ -21,16 +21,23 @@ namespace ContactsApp.Controllers
         }
 
         // GET: Contacts
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
             ViewData["BirthDateSortParm"] = sortOrder == "Birthdate" ? "Birthdate_desc" : "Birthdate";
             ViewData["CompanySortParm"] = sortOrder == "Company" ? "Company_desc" : "Company";
             ViewData["CategoryIdSortParm"] = sortOrder == "Category" ? "Category_desc" : "Category";
+            ViewData["CurrentFilter"] = searchString;
 
 
             var contacts = from c in _context.Contacts
                            select c;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                contacts = contacts.Where(s => s.Lastname.Contains(searchString)
+                                       || s.Firstname.Contains(searchString));
+            }
+
             switch (sortOrder)
             {
                 case "Name_desc":
@@ -58,7 +65,7 @@ namespace ContactsApp.Controllers
                 default:
                     contacts = contacts.OrderBy(c => c.Lastname);
                     break;
-            }    
+            }
             return View(await contacts.AsNoTracking().ToListAsync());
         }
 
