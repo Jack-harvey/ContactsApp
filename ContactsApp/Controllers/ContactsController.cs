@@ -21,12 +21,27 @@ namespace ContactsApp.Controllers
         }
 
         // GET: Contacts
-        public async Task<IActionResult> Index(string sortOrder, string searchString)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
             ViewData["BirthDateSortParm"] = sortOrder == "Birthdate" ? "Birthdate_desc" : "Birthdate";
             ViewData["CompanySortParm"] = sortOrder == "Company" ? "Company_desc" : "Company";
             ViewData["CategoryIdSortParm"] = sortOrder == "Category" ? "Category_desc" : "Category";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
             ViewData["CurrentFilter"] = searchString;
 
 
@@ -66,7 +81,8 @@ namespace ContactsApp.Controllers
                     contacts = contacts.OrderBy(c => c.Lastname);
                     break;
             }
-            return View(await contacts.AsNoTracking().ToListAsync());
+            int contactsOnEachPage = 8;
+            return View(await PaginatedList<Contact>.CreateAsync(contacts.AsNoTracking(), pageNumber ?? 1, contactsOnEachPage));
         }
 
         // GET: Contacts/Details/5

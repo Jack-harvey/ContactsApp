@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ContactsApp.Models.Contact>
+﻿@model PaginatedList<ContactsApp.Models.Contact>
 
 @{
     ViewData["Title"] = "Index";
@@ -24,22 +24,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Firstname)
+                First Name
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Lastname)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Last Name</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["CompanySortParm"]">@Html.DisplayNameFor(model => model.Company)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CompanySortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Company</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Mobile)
+                Mobile
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["BirthDateSortParm"]">@Html.DisplayNameFor(model => model.Birthday)</a>
+                E-Mail
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["CategoryIdSortParm"]">@Html.DisplayNameFor(model => model.Category)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["BirthDateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Date of Birth</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CategoryIdSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Category</a>
             </th>
         </tr>
     </thead>
@@ -61,19 +64,10 @@
                     @Html.DisplayFor(modelItem => item.Mobile)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Phone)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Birthday)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Picture)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Notes)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Category.Description)
@@ -87,3 +81,23 @@
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
