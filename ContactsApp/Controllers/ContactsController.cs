@@ -21,26 +21,121 @@ namespace ContactsApp.Controllers
         }
 
         // GET: Contacts
+        public async Task<IActionResult> Index(string searchString)
+        {
+            ViewData["CurrentSort"] = "Name";
+            ViewData["NameSortParm"] = "";
+            ViewData["BirthDateSortParm"] = "Birthdate";
+            ViewData["CompanySortParm"] = "Company";
+            ViewData["CategoryIdSortParm"] = "Category";
+            ViewData["contactsOnEachPage"] = 8;
+
+            
+
+            ViewData["CurrentFilter"] = searchString;
+
+
+            var contacts = from c in _context.Contacts
+                           select c;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                contacts = contacts.Where(s => s.Lastname.Contains(searchString)
+                                       || s.Firstname.Contains(searchString));
+            }
+
+            contacts = contacts.OrderBy(c => c.Lastname);
+
+            return View(await PaginatedList<Contact>.CreateAsync(contacts.AsNoTracking(),1,8));
+            
+        }
+
+        //public async Task<IActionResult> Index(
+        //    string sortOrder,
+        //    string currentFilter,
+        //    string searchString,
+        //    int? pageNumber,
+        //    int? contactsOnEachPage)
+        //{
+        //    ViewData["CurrentSort"] = sortOrder;
+        //    ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
+        //    ViewData["BirthDateSortParm"] = sortOrder == "Birthdate" ? "Birthdate_desc" : "Birthdate";
+        //    ViewData["CompanySortParm"] = sortOrder == "Company" ? "Company_desc" : "Company";
+        //    ViewData["CategoryIdSortParm"] = sortOrder == "Category" ? "Category_desc" : "Category";
+        //    ViewData["contactsOnEachPage"] = contactsOnEachPage;
+
+        //    if (searchString != null)
+        //    {
+        //        pageNumber = 1;
+        //    }
+        //    else
+        //    {
+        //        searchString = currentFilter;
+        //    }
+
+        //    ViewData["CurrentFilter"] = searchString;
+
+
+        //    var contacts = from c in _context.Contacts
+        //                   select c;
+        //    if (!String.IsNullOrEmpty(searchString))
+        //    {
+        //        contacts = contacts.Where(s => s.Lastname.Contains(searchString)
+        //                               || s.Firstname.Contains(searchString));
+        //    }
+
+        //    switch (sortOrder)
+        //    {
+        //        case "Name_desc":
+        //            contacts = contacts.OrderByDescending(c => c.Lastname);
+        //            break;
+
+        //        case "Birthdate":
+        //            contacts = contacts.OrderBy(c => c.Birthday);
+        //            break;
+        //        case "Birthdate_desc":
+        //            contacts = contacts.OrderByDescending(c => c.Birthday);
+        //            break;
+        //        case "Company":
+        //            contacts = contacts.OrderBy(c => c.Company);
+        //            break;
+        //        case "Company_desc":
+        //            contacts = contacts.OrderByDescending(c => c.Company);
+        //            break;
+        //        case "Category":
+        //            contacts = contacts.OrderBy(c => c.Category.Description);
+        //            break;
+        //        case "Category_desc":
+        //            contacts = contacts.OrderByDescending(c => c.Category.Description);
+        //            break;
+        //        default:
+        //            contacts = contacts.OrderBy(c => c.Lastname);
+        //            break;
+        //    }
+
+        //    return View(await PaginatedList<Contact>.CreateAsync(contacts.AsNoTracking(), pageNumber ?? 1, contactsOnEachPage ?? 8));
+        //}
+
+        [HttpPost]
         public async Task<IActionResult> Index(
             string sortOrder,
-            string currentFilter,
+            //string currentFilter,
             string searchString,
-            int? pageNumber)
+            int? pageNumber,
+            int? contactsOnEachPage)
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
             ViewData["BirthDateSortParm"] = sortOrder == "Birthdate" ? "Birthdate_desc" : "Birthdate";
             ViewData["CompanySortParm"] = sortOrder == "Company" ? "Company_desc" : "Company";
             ViewData["CategoryIdSortParm"] = sortOrder == "Category" ? "Category_desc" : "Category";
+            ViewData["contactsOnEachPage"] = contactsOnEachPage;
 
             if (searchString != null)
             {
                 pageNumber = 1;
             }
-            else
-            {
-                searchString = currentFilter;
-            }
+            //this breaks the search, as a search will only ever have one page
+            
 
             ViewData["CurrentFilter"] = searchString;
 
@@ -81,8 +176,8 @@ namespace ContactsApp.Controllers
                     contacts = contacts.OrderBy(c => c.Lastname);
                     break;
             }
-            int contactsOnEachPage = 8;
-            return View(await PaginatedList<Contact>.CreateAsync(contacts.AsNoTracking(), pageNumber ?? 1, contactsOnEachPage));
+
+            return View(await PaginatedList<Contact>.CreateAsync(contacts.AsNoTracking(), pageNumber ?? 1, contactsOnEachPage ?? 8));
         }
 
         // GET: Contacts/Details/5
