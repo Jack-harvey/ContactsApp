@@ -1,0 +1,30 @@
+﻿@model IEnumerable<ContactsApp.Models.CompanyViewModels.CompanyGroup>
+
+@{
+    ViewData["Title"] = "Student Body Statistics";
+}
+
+<h2>Student Body Statistics</h2>
+
+<table>
+    <tr>
+        <th>
+            Company
+        </th>
+        <th>
+            Count
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyName)
+            </td>
+            <td>
+                @item.CompanyCount
+            </td>
+        </tr>
+    }
+</table>
