@@ -129,12 +129,6 @@ namespace ContactsApp.Controllers
             ViewData["CompanySortParm"] = sortOrder == "Company" ? "Company_desc" : "Company";
             ViewData["CategoryIdSortParm"] = sortOrder == "Category" ? "Category_desc" : "Category";
             ViewData["contactsOnEachPage"] = contactsOnEachPage;
-
-            if (searchString != null)
-            {
-                pageNumber = 1;
-            }
-            //this breaks the search, as a search will only ever have one page
             
 
             ViewData["CurrentFilter"] = searchString;
