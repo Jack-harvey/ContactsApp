@@ -95,34 +95,6 @@
     var contactsOnEachPage = (int?)@ViewData["contactsOnEachPage"] ?? 8;
 }
 
-@*<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   asp-route-contactsOnEachPage="@ViewData["contactsPerPage"]"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   asp-route-contactsOnEachPage="@ViewData["contactsPerPage"]"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>*@
-@*
-<div class="dropdown">
-    <a asp-action="Index"
-       asp-route-sortOrder="@ViewData["CurrentSort"]"
-       asp-route-pageNumber="@(Model.PageIndex)"
-       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       asp-route-contactsOnEachPage="@ViewData["contactsPerPage"]"
-       class="btn btn-default">
-        32
-    </a>
-</div>*@
-
 <button id="btnPrev" type="button" class="btn btn-primary @prevDisabled" @prevDisabled>Previous</button>
 <button id="btnNext" type="button" class="btn btn-primary @nextDisabled" @nextDisabled>Next</button>
 
