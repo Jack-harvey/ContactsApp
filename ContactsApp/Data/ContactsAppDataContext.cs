@@ -18,6 +18,8 @@ namespace ContactsApp.Data
         }
 
         public virtual DbSet<Category> Categories { get; set; } = null!;
+        public virtual DbSet<Company> Companies { get; set; } = null!;
+        public virtual DbSet<CompanyOffice> CompanyOffices { get; set; } = null!;
         public virtual DbSet<Contact> Contacts { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -39,6 +41,51 @@ namespace ContactsApp.Data
                     .HasMaxLength(20)
                     .IsUnicode(false)
                     .IsFixedLength();
+            });
+
+            modelBuilder.Entity<Company>(entity =>
+            {
+                entity.Property(e => e.CompanyId).ValueGeneratedNever();
+
+                entity.Property(e => e.Abn)
+                    .HasMaxLength(11)
+                    .HasColumnName("ABN")
+                    .IsFixedLength();
+
+                entity.Property(e => e.CompanyName)
+                    .HasMaxLength(50)
+                    .IsFixedLength();
+
+                entity.Property(e => e.FoundingDate).HasColumnType("date");
+
+                entity.Property(e => e.Website)
+                    .HasMaxLength(100)
+                    .IsFixedLength();
+            });
+
+            modelBuilder.Entity<CompanyOffice>(entity =>
+            {
+                entity.HasKey(e => e.OfficeId);
+
+                entity.Property(e => e.OfficeId).ValueGeneratedNever();
+
+                entity.Property(e => e.Address)
+                    .HasMaxLength(100)
+                    .IsFixedLength();
+
+                entity.Property(e => e.City)
+                    .HasMaxLength(20)
+                    .IsFixedLength();
+
+                entity.Property(e => e.PostCode)
+                    .HasMaxLength(4)
+                    .IsFixedLength();
+
+                entity.HasOne(d => d.Company)
+                    .WithMany(p => p.CompanyOffices)
+                    .HasForeignKey(d => d.CompanyId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CompanyOffices_Companies");
             });
 
             modelBuilder.Entity<Contact>(entity =>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ContactsApp.TempModels
+namespace ContactsApp.Models
 {
     public partial class CompanyOffice
     {
