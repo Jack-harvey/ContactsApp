@@ -36,6 +36,7 @@ namespace ContactsApp.Controllers
 
 
             var contacts = from c in _context.Contacts
+                           .Include(cat => cat.Category)
                            select c;
             if (!String.IsNullOrEmpty(searchString))
             {
