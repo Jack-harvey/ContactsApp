@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContactsApp.Models
 {
@@ -10,10 +12,12 @@ namespace ContactsApp.Models
             Contacts = new HashSet<Contact>();
         }
 
+        [Key]
         public int CategoryId { get; set; }
+        [StringLength(50)]
         public string Description { get; set; } = null!;
 
-
+        [InverseProperty(nameof(Contact.Category))]
         public virtual ICollection<Contact> Contacts { get; set; }
     }
 }

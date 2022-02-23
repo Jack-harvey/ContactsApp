@@ -33,53 +33,14 @@ namespace ContactsApp.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Category>(entity =>
-            {
-                entity.Property(e => e.CategoryId).ValueGeneratedNever();
-
-                entity.Property(e => e.Description)
-                    .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-            });
-
             modelBuilder.Entity<Company>(entity =>
             {
                 entity.Property(e => e.CompanyId).ValueGeneratedNever();
-
-                entity.Property(e => e.Abn)
-                    .HasMaxLength(11)
-                    .HasColumnName("ABN")
-                    .IsFixedLength();
-
-                entity.Property(e => e.CompanyName)
-                    .HasMaxLength(50)
-                    .IsFixedLength();
-
-                entity.Property(e => e.FoundingDate).HasColumnType("date");
-
-                entity.Property(e => e.Website)
-                    .HasMaxLength(100)
-                    .IsFixedLength();
             });
 
             modelBuilder.Entity<CompanyOffice>(entity =>
             {
-                entity.HasKey(e => e.OfficeId);
-
                 entity.Property(e => e.OfficeId).ValueGeneratedNever();
-
-                entity.Property(e => e.Address)
-                    .HasMaxLength(100)
-                    .IsFixedLength();
-
-                entity.Property(e => e.City)
-                    .HasMaxLength(20)
-                    .IsFixedLength();
-
-                entity.Property(e => e.PostCode)
-                    .HasMaxLength(4)
-                    .IsFixedLength();
 
                 entity.HasOne(d => d.Company)
                     .WithMany(p => p.CompanyOffices)
@@ -92,49 +53,16 @@ namespace ContactsApp.Data
             {
                 entity.Property(e => e.ContactId).ValueGeneratedNever();
 
-                entity.Property(e => e.Birthday).HasColumnType("date");
-
-                entity.Property(e => e.Company)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Email)
-                    .HasMaxLength(75)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Firstname)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Lastname)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Mobile)
-                    .HasMaxLength(15)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Notes)
-                    .HasMaxLength(300)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Phone)
-                    .HasMaxLength(15)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Picture)
-                    .HasMaxLength(255)
-                    .IsFixedLength();
-
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Contacts)
                     .HasForeignKey(d => d.CategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Contacts_Categories");
+
+                entity.HasOne(d => d.Company)
+                    .WithMany(p => p.Contacts)
+                    .HasForeignKey(d => d.CompanyId)
+                    .HasConstraintName("FK_Contacts_Companies");
             });
 
             OnModelCreatingPartial(modelBuilder);

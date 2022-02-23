@@ -13,7 +13,7 @@ namespace ContactsApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ContactsAppDataContext _context;
 
-        public HomeController(ILogger<HomeController> logger, ContactsAppDataContext context)
+        public HomeController(ILogger<HomeController> logger, ContactsAppDataContext context) 
         {
             _logger = logger;
             _context = context;
@@ -33,13 +33,16 @@ namespace ContactsApp.Controllers
         {
             IQueryable<CompanyGroup> data =
                 from contact in _context.Contacts
-                group contact by contact.Company into companyGroup
+                join  company in _context.Companies on  contact.CompanyId equals company.CompanyId
+                //.Include(i => i.Company)
+                group company by company.CompanyName into companyGroup
                 select new CompanyGroup()
                 {
                     CompanyName = companyGroup.Key,
                     CompanyCount = companyGroup.Count(),
                 };
             return View(await data.AsNoTracking().ToListAsync());
+            
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
