@@ -8,7 +8,9 @@ builder.Services.AddDbContext<ContactsApp.Data.ContactsAppDataContext>(options =
 });
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services
+    .AddControllersWithViews()
+    .AddRazorRuntimeCompilation();
 
 var app = builder.Build();
 
