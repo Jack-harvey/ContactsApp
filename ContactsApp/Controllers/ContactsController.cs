@@ -37,6 +37,7 @@ namespace ContactsApp.Controllers
 
             var contacts = from c in _context.Contacts
                            .Include(cat => cat.Category)
+                           .Include(c => c.Company)
                            select c;
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -70,6 +71,8 @@ namespace ContactsApp.Controllers
 
 
             var contacts = from c in _context.Contacts
+                           .Include(cat => cat.Category)
+                           .Include(c => c.Company)
                            select c;
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -90,10 +93,10 @@ namespace ContactsApp.Controllers
                     contacts = contacts.OrderByDescending(c => c.Birthday);
                     break;
                 case "Company":
-                    contacts = contacts.OrderBy(c => c.Company);
+                    contacts = contacts.OrderBy(c => c.Company.CompanyName);
                     break;
                 case "Company_desc":
-                    contacts = contacts.OrderByDescending(c => c.Company);
+                    contacts = contacts.OrderByDescending(c => c.Company.CompanyName);
                     break;
                 case "Category":
                     contacts = contacts.OrderBy(c => c.Category.Description);
@@ -118,7 +121,8 @@ namespace ContactsApp.Controllers
             }
 
             var contact = await _context.Contacts
-                .Include(c => c.Category)
+                .Include(cat => cat.Category)
+                .Include(c => c.Company)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ContactId == id);
             if (contact == null)
@@ -142,7 +146,7 @@ namespace ContactsApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("Firstname,Lastname,Company,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact)
+            [Bind("Firstname,Lastname,CompanyId,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact)
         {
             try
             {
@@ -180,7 +184,8 @@ namespace ContactsApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", contact.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(o => o.Description).Select(s => new { s.CategoryId, s.Description}), "CategoryId", "Description", contact.CategoryId);
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(o => o.CompanyName).Select(s => new { s.CompanyId, s.CompanyName }), "CompanyId", "CompanyName", contact.CompanyId);
             return View(contact);
         }
 
@@ -189,7 +194,7 @@ namespace ContactsApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("ContactId,Firstname,Lastname,Company,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact)
+        public async Task<IActionResult> Edit(Guid id, [Bind("ContactId,Firstname,Lastname,CompanyId,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact)
 
         {
             if (id != contact.ContactId)
