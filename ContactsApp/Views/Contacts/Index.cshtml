@@ -18,7 +18,7 @@
             <a asp-action="Index">Back to Full List</a>
         </p>
     </div>
-    
+
     <input type="hidden" id="sortOrder" name="sortOrder" value="@ViewData["CurrentSort"]" />
     <input type="hidden" id="pageNumber" name="pageNumber" value="@Model.PageIndex" />
     <input type="hidden" id="contactsOnEachPage" name="contactsOnEachPage" value="@ViewData["contactsOnEachPage"]" />
@@ -46,10 +46,12 @@
                 E-Mail
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["BirthDateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Date of Birth</a>
+                @*<a asp-action="Index" asp-route-sortOrder="@ViewData["BirthDateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Date of Birth</a>*@
+                <a href=# id="birthdateSort" class="sort-link" data-sort-order="@ViewData["BirthDateSortParm"]">Company</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["CategoryIdSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Category</a>
+                @*<a asp-action="Index" asp-route-sortOrder="@ViewData["CategoryIdSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Category</a>*@
+                <a href=# id="categorySort" class="sort-link" data-sort-order="@ViewData["CategoryIdSortParm"]">Company</a>
             </th>
         </tr>
     </thead>
@@ -65,7 +67,7 @@
                     @Html.DisplayFor(modelItem => item.Lastname)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Company)
+                    @Html.DisplayFor(modelItem => item.Company.CompanyName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Mobile)
@@ -98,62 +100,72 @@
 <button id="btnPrev" type="button" class="btn btn-primary @prevDisabled" @prevDisabled>Previous</button>
 <button id="btnNext" type="button" class="btn btn-primary @nextDisabled" @nextDisabled>Next</button>
 
-<select id="ddNumPages" class="form-select" >
-    <option selected="@(contactsOnEachPage == 8)"  value="8">8</option>
+<select id="ddNumPages" class="form-select">
+    <option selected="@(contactsOnEachPage == 8)" value="8">8</option>
     <option selected="@(contactsOnEachPage == 16)" value="16">16</option>
     <option selected="@(contactsOnEachPage == 32)" value="32">32</option>
 </select>
 
 @section Scripts {
-    <script>
+<script>
 
-        document.getElementById("btnPrev").addEventListener('click', function() {
-            const pageNumberElement = document.getElementById("pageNumber");
-            let pageNumber = Number(pageNumberElement.value);
-            pageNumber--;
-            //pageNumber = pageNumber - 1;
-            pageNumberElement.value = pageNumber;
-            //pageNumberElement.value = Number(pageNumberElement.value)--;
-            //pageNumberElement.value = Number(pageNumberElement.value)-1;
-            document.forms[0].submit();
-        });
+    document.getElementById("btnPrev").addEventListener('click', function() {
+        const pageNumberElement = document.getElementById("pageNumber");
+        let pageNumber = Number(pageNumberElement.value);
+        pageNumber--;
+        //pageNumber = pageNumber - 1;
+        pageNumberElement.value = pageNumber;
+        //pageNumberElement.value = Number(pageNumberElement.value)--;
+        //pageNumberElement.value = Number(pageNumberElement.value)-1;
+        document.forms[0].submit();
+    });
 
-        document.getElementById("btnNext").addEventListener('click', function() {
-            const pageNumberElement = document.getElementById("pageNumber");
-            let pageNumber = Number(pageNumberElement.value);
-            pageNumber++;
-            pageNumberElement.value = pageNumber;
+    document.getElementById("btnNext").addEventListener('click', function() {
+        const pageNumberElement = document.getElementById("pageNumber");
+        let pageNumber = Number(pageNumberElement.value);
+        pageNumber++;
+        pageNumberElement.value = pageNumber;
 
 
-            document.forms[0].submit();
-        });
-        
-        document.getElementById("ddNumPages").addEventListener('change', function() {
-        //document.getElementById("ddNumPages").addEventListener('change', function() {
-            //.. do stuff
-            document.getElementById("contactsOnEachPage").value = this.value;
-            document.forms[0].submit();
-        });
+        document.forms[0].submit();
+    });
 
-        document.getElementById("nameSort").addEventListener('click', function() {
-            //.. do stuff
-            //const nameSortElement = this; // this refers to the thing that called or triggered this function
-            //document.getElementById("sortOrder").value = nameSortElement.dataset.sortOrder;
-            updateSortOrder(this);
-            document.forms[0].submit();
-        });
+    document.getElementById("ddNumPages").addEventListener('change', function() {
+    //document.getElementById("ddNumPages").addEventListener('change', function() {
+        //.. do stuff
+        document.getElementById("contactsOnEachPage").value = this.value;
+        document.forms[0].submit();
+    });
 
-        document.getElementById("companySort").addEventListener('click', function() {
-            //.. do stuff
-            //const nameSortElement = this; // this refers to the thing that called or triggered this function
-            //document.getElementById("sortOrder").value = nameSortElement.dataset.sortOrder;
-            updateSortOrder(this);
-            document.forms[0].submit();
-        });
+    document.getElementById("nameSort").addEventListener('click', function() {
+        //.. do stuff
+        //const nameSortElement = this; // this refers to the thing that called or triggered this function
+        //document.getElementById("sortOrder").value = nameSortElement.dataset.sortOrder;
+        updateSortOrder(this);
+        document.forms[0].submit();
+    });
 
-        function updateSortOrder(target) {
-            document.getElementById("sortOrder").value = target.dataset.sortOrder;
-        }
+    document.getElementById("companySort").addEventListener('click', function() {
+        //.. do stuff
+        //const nameSortElement = this; // this refers to the thing that called or triggered this function
+        //document.getElementById("sortOrder").value = nameSortElement.dataset.sortOrder;
+        updateSortOrder(this);
+        document.forms[0].submit();
+    });
 
-    </script>
+            document.getElementById("birthdateSort").addEventListener('click', function() {
+        updateSortOrder(this);
+        document.forms[0].submit();
+    });
+
+            document.getElementById("categorySort").addEventListener('click', function() {
+        updateSortOrder(this);
+        document.forms[0].submit();
+    });
+
+    function updateSortOrder(target) {
+        document.getElementById("sortOrder").value = target.dataset.sortOrder;
+    }
+
+</script>
 }
