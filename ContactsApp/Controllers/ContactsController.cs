@@ -136,8 +136,10 @@ namespace ContactsApp.Controllers
         // GET: Contacts/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId, CompanyId");
+            //ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
+            //ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId, CompanyId");
+            ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(o => o.Description).Select(s => new { s.CategoryId, s.Description }), "CategoryId", "Description");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(o => o.CompanyName).Select(s => new { s.CompanyId, s.CompanyName }), "CompanyId", "CompanyName");
             return View();
         }
 

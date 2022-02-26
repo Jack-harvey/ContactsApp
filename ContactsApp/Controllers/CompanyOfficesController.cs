@@ -37,7 +37,7 @@ namespace ContactsApp.Controllers
 
             var Office = from c in _context.CompanyOffices
                            .Include(c => c.Company)
-                           select c;
+                         select c;
             if (!String.IsNullOrEmpty(searchString))
             {
                 Office = Office.Where(s => s.Company.CompanyName.Contains(searchString)
@@ -134,12 +134,16 @@ namespace ContactsApp.Controllers
             return View(companyOffice);
         }
 
-        // GET: CompanyOffices/Create
+        //GET: CompanyOffices/Create
         public IActionResult Create()
         {
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "CompanyId");
+            //ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "CompanyId");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(o => o.CompanyName).Select(s => new { s.CompanyId, s.CompanyName }), "CompanyId", "CompanyName");
             return View();
         }
+
+
+
 
         // POST: CompanyOffices/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -172,7 +176,7 @@ namespace ContactsApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(o => o.CompanyName).Select(s => new {s.CompanyId, s.CompanyName}), "CompanyId", "CompanyName", companyOffice.CompanyId);
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(o => o.CompanyName).Select(s => new { s.CompanyId, s.CompanyName }), "CompanyId", "CompanyName", companyOffice.CompanyId);
             return View(companyOffice);
         }
 
