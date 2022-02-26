@@ -28,7 +28,7 @@ namespace ContactsApp.Controllers
             ViewData["BirthDateSortParm"] = "Birthdate";
             ViewData["CompanySortParm"] = "Company";
             ViewData["CategoryIdSortParm"] = "Category";
-            ViewData["contactsOnEachPage"] = 8;
+            ViewData["rowsOnEachPage"] = 8;
 
             
 
@@ -57,14 +57,14 @@ namespace ContactsApp.Controllers
             //string currentFilter,
             string searchString,
             int? pageNumber,
-            int? contactsOnEachPage)
+            int? rowsOnEachPage)
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
             ViewData["BirthDateSortParm"] = sortOrder == "Birthdate" ? "Birthdate_desc" : "Birthdate";
             ViewData["CompanySortParm"] = sortOrder == "Company" ? "Company_desc" : "Company";
             ViewData["CategoryIdSortParm"] = sortOrder == "Category" ? "Category_desc" : "Category";
-            ViewData["contactsOnEachPage"] = contactsOnEachPage;
+            ViewData["rowsOnEachPage"] = rowsOnEachPage;
             
 
             ViewData["CurrentFilter"] = searchString;
@@ -109,7 +109,7 @@ namespace ContactsApp.Controllers
                     break;
             }
 
-            return View(await PaginatedList<Contact>.CreateAsync(contacts.AsNoTracking(), pageNumber ?? 1, contactsOnEachPage ?? 8));
+            return View(await PaginatedList<Contact>.CreateAsync(contacts.AsNoTracking(), pageNumber ?? 1, rowsOnEachPage ?? 8));
         }
 
         // GET: Contacts/Details/5

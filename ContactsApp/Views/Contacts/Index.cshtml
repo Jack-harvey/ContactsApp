@@ -21,7 +21,7 @@
 
     <input type="hidden" id="sortOrder" name="sortOrder" value="@ViewData["CurrentSort"]" />
     <input type="hidden" id="pageNumber" name="pageNumber" value="@Model.PageIndex" />
-    <input type="hidden" id="contactsOnEachPage" name="contactsOnEachPage" value="@ViewData["contactsOnEachPage"]" />
+    <input type="hidden" id="rowsOnEachPage" name="rowsOnEachPage" value="@ViewData["rowsOnEachPage"]" />
 
 </form>
 
@@ -94,16 +94,16 @@
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-    var contactsOnEachPage = (int?)@ViewData["contactsOnEachPage"] ?? 8;
+    var rowsOnEachPage = (int?)@ViewData["rowsOnEachPage"] ?? 8;
 }
 
 <button id="btnPrev" type="button" class="btn btn-primary @prevDisabled" @prevDisabled>Previous</button>
 <button id="btnNext" type="button" class="btn btn-primary @nextDisabled" @nextDisabled>Next</button>
 
 <select id="ddNumPages" class="form-select">
-    <option selected="@(contactsOnEachPage == 8)" value="8">8</option>
-    <option selected="@(contactsOnEachPage == 16)" value="16">16</option>
-    <option selected="@(contactsOnEachPage == 32)" value="32">32</option>
+    <option selected="@(rowsOnEachPage == 8)" value="8">8</option>
+    <option selected="@(rowsOnEachPage == 16)" value="16">16</option>
+    <option selected="@(rowsOnEachPage == 32)" value="32">32</option>
 </select>
 
 @section Scripts {
@@ -133,7 +133,7 @@
     document.getElementById("ddNumPages").addEventListener('change', function() {
     //document.getElementById("ddNumPages").addEventListener('change', function() {
         //.. do stuff
-        document.getElementById("contactsOnEachPage").value = this.value;
+        document.getElementById("rowsOnEachPage").value = this.value;
         document.forms[0].submit();
     });
 
