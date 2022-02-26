@@ -137,6 +137,7 @@ namespace ContactsApp.Controllers
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId, CompanyId");
             return View();
         }
 

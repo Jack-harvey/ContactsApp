@@ -28,9 +28,11 @@
                 <span asp-validation-for="Lastname" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Company" class="control-label"></label>
-                <input asp-for="Company" class="form-control" />
-                <span asp-validation-for="Company" class="text-danger"></span>
+                <label asp-for="CompanyId" class="control-label"></label>
+                <select asp-for="CompanyId" class="form-select" asp-items="ViewBag.CompanyId">
+                    <option value="">None</option>
+                </select>
+                <span asp-validation-for="CompanyId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Mobile" class="control-label"></label>
@@ -64,7 +66,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
+                <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
