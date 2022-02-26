@@ -21,28 +21,80 @@ namespace ContactsApp.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Categories.ToListAsync());
+            ViewData["CurrentSort"] = "Name";
+
+            ViewData["CurrentFilter"] = searchString;
+
+
+            var category = from c in _context.Categories
+                           select c;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                category = category.Where(s => s.Description.Contains(searchString));
+            }
+
+            category = category.OrderBy(c => c.Description);
+
+            return View(await PaginatedList<Category>.CreateAsync(category.AsNoTracking(), 1, 8));
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(
+           string sortOrder,
+           //string currentFilter,
+           string searchString,
+           int? pageNumber,
+           int? rowsOnEachPage)
+        {
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["DescriptionSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Description_desc" : "";
+            ViewData["rowsOnEachPage"] = rowsOnEachPage;
+
+
+            ViewData["CurrentFilter"] = searchString;
+
+
+            var category = from c in _context.Categories
+                           select c;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                category = category.Where(s => s.Description.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "Description_desc":
+                    category = category.OrderByDescending(c => c.Description);
+                    break;
+
+                default:
+                    category = category.OrderBy(c => c.Description);
+                    break;
+            }
+
+            return View(await PaginatedList<Category>.CreateAsync(category.AsNoTracking(), pageNumber ?? 1, rowsOnEachPage ?? 8));
         }
 
         // GET: Categories/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
+        //    var category = await _context.Categories
+        //        .FirstOrDefaultAsync(m => m.CategoryId == id);
+        //    if (category == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(category);
-        }
+        //    return View(category);
+        //}
 
         // GET: Categories/Create
         public IActionResult Create()
