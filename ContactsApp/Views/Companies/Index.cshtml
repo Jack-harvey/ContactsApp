@@ -1,0 +1,137 @@
+﻿@model PaginatedList<ContactsApp.Models.Company>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+
+<form asp-action="Index" method="POST">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+
+    <input type="hidden" id="sortOrder" name="sortOrder" value="@ViewData["CurrentSort"]" />
+    <input type="hidden" id="pageNumber" name="pageNumber" value="@Model.PageIndex" />
+    <input type="hidden" id="rowsOnEachPage" name="rowsOnEachPage" value="@ViewData["contactsOnEachPage"]" />
+
+</form>
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a href=# id="nameSort" class="sort-link" data-sort-order="@ViewData["NameSortParm"]">Company Name</a>
+            </th>
+            <th>
+                <a href=# id="abnSort" class="sort-link" data-sort-order="@ViewData["AbnSortParm"]">ABN</a>
+
+            </th>
+            <th>
+                Website
+            </th>
+            <th>
+                <a href=# id="dateSort" class="sort-link" data-sort-order="@ViewData["FoundDateSortParm"]">Founding Date</a>
+
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Abn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Website)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FoundingDate)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.CompanyId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.CompanyId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.CompanyId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var rowsOnEachPage = (int?)@ViewData["rowsOnEachPage"] ?? 8;
+}
+
+<button id="btnPrev" type="button" class="btn btn-primary @prevDisabled" @prevDisabled>Previous</button>
+<button id="btnNext" type="button" class="btn btn-primary @nextDisabled" @nextDisabled>Next</button>
+
+<select id="ddNumPages" class="form-select">
+    <option selected="@(rowsOnEachPage == 8)" value="8">8</option>
+    <option selected="@(rowsOnEachPage == 16)" value="16">16</option>
+    <option selected="@(rowsOnEachPage == 32)" value="32">32</option>
+</select>
+
+
+@section Scripts {
+<script>
+
+    document.getElementById("btnPrev").addEventListener('click', function() {
+        const pageNumberElement = document.getElementById("pageNumber");
+        let pageNumber = Number(pageNumberElement.value);
+        pageNumber--;
+        pageNumberElement.value = pageNumber;
+        document.forms[0].submit();
+    });
+
+    document.getElementById("btnNext").addEventListener('click', function() {
+        const pageNumberElement = document.getElementById("pageNumber");
+        let pageNumber = Number(pageNumberElement.value);
+        pageNumber++;
+        pageNumberElement.value = pageNumber;
+        document.forms[0].submit();
+    });
+
+    document.getElementById("ddNumPages").addEventListener('change', function() {
+        document.getElementById("rowsOnEachPage").value = this.value;
+        document.forms[0].submit();
+    });
+
+            document.getElementById("nameSort").addEventListener('click', function() {
+        updateSortOrder(this);
+        document.forms[0].submit();
+    });
+
+                document.getElementById("abnSort").addEventListener('click', function() {
+        updateSortOrder(this);
+        document.forms[0].submit();
+    });
+
+                document.getElementById("dateSort").addEventListener('click', function() {
+        updateSortOrder(this);
+        document.forms[0].submit();
+    });
+
+    function updateSortOrder(target) {
+        document.getElementById("sortOrder").value = target.dataset.sortOrder;
+    }
+
+</script>
+}
