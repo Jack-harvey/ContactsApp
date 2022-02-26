@@ -19,6 +19,6 @@ namespace ContactsApp.Models
 
         [ForeignKey(nameof(CompanyId))]
         [InverseProperty("CompanyOffices")]
-        public virtual Company Company { get; set; } = null!;
+        public virtual Company? Company { get; set; } //= null!;
     }
 }

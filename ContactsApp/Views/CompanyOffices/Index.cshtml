@@ -1,0 +1,139 @@
+﻿@model PaginatedList<ContactsApp.Models.CompanyOffice>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form asp-action="Index" method="POST">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+
+    <input type="hidden" id="sortOrder" name="sortOrder" value="@ViewData["CurrentSort"]" />
+    <input type="hidden" id="pageNumber" name="pageNumber" value="@Model.PageIndex" />
+    <input type="hidden" id="rowsOnEachPage" name="rowsOnEachPage" value="@ViewData["rowsOnEachPage"]" />
+
+</form>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a href=# id="nameSort" class="sort-link" data-sort-order="@ViewData["NameSortParm"]">Company</a>
+            </th>
+            <th>
+                <a href=# id="addressSort" class="sort-link" data-sort-order="@ViewData["AddressSortParm"]">Address</a>
+            </th>
+            <th>
+                <a href=# id="citySort" class="sort-link" data-sort-order="@ViewData["CitySortParm"]">City</a>
+            </th>
+            <th>
+                <a href=# id="postcodeSort" class="sort-link" data-sort-order="@ViewData["PostcodeSortParm"]">PostCode</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company.CompanyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PostCode)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.OfficeId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.OfficeId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.OfficeId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var rowsOnEachPage = (int?)@ViewData["rowsOnEachPage"] ?? 8;
+}
+
+<button id="btnPrev" type="button" class="btn btn-primary @prevDisabled" @prevDisabled>Previous</button>
+<button id="btnNext" type="button" class="btn btn-primary @nextDisabled" @nextDisabled>Next</button>
+
+<select id="ddNumPages" class="form-select">
+    <option selected="@(rowsOnEachPage == 8)" value="8">8</option>
+    <option selected="@(rowsOnEachPage == 16)" value="16">16</option>
+    <option selected="@(rowsOnEachPage == 32)" value="32">32</option>
+</select>
+
+@section Scripts {
+<script>
+
+    document.getElementById("btnPrev").addEventListener('click', function() {
+        const pageNumberElement = document.getElementById("pageNumber");
+        let pageNumber = Number(pageNumberElement.value);
+        pageNumber--;
+        pageNumberElement.value = pageNumber;
+        document.forms[0].submit();
+    });
+
+    document.getElementById("btnNext").addEventListener('click', function() {
+        const pageNumberElement = document.getElementById("pageNumber");
+        let pageNumber = Number(pageNumberElement.value);
+        pageNumber++;
+        pageNumberElement.value = pageNumber;
+
+
+        document.forms[0].submit();
+    });
+
+    document.getElementById("ddNumPages").addEventListener('change', function() {
+        document.getElementById("rowsOnEachPage").value = this.value;
+        document.forms[0].submit();
+    });
+
+    document.getElementById("nameSort").addEventListener('click', function() {
+        updateSortOrder(this);
+        document.forms[0].submit();
+    });
+
+    document.getElementById("addressSort").addEventListener('click', function() {
+        updateSortOrder(this);
+        document.forms[0].submit();
+    });
+
+            document.getElementById("citySort").addEventListener('click', function() {
+        updateSortOrder(this);
+        document.forms[0].submit();
+    });
+
+            document.getElementById("postcodeSort").addEventListener('click', function() {
+        updateSortOrder(this);
+        document.forms[0].submit();
+    });
+
+    function updateSortOrder(target) {
+        document.getElementById("sortOrder").value = target.dataset.sortOrder;
+    }
+
+</script>
+}
