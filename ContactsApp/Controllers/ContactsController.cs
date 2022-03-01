@@ -149,15 +149,27 @@ namespace ContactsApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("Firstname,Lastname,CompanyId,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact)
+            [Bind("Firstname,Lastname,CompanyId,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact, IFormFile pictureUpload)
         {
+
             try
             {
                 if (ModelState.IsValid)
                 {
                     contact.ContactId = Guid.NewGuid();
+
+                    string fileExtension = Path.GetExtension(pictureUpload.FileName);
+                    string fileName = $"{contact.Firstname}.{contact.Lastname}.{contact.ContactId}{fileExtension}";
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+                    contact.Picture = filePath;
+
                     _context.Add(contact);
                     await _context.SaveChangesAsync();
+
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await pictureUpload.CopyToAsync(fileStream);
+                    }
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -285,5 +297,17 @@ namespace ContactsApp.Controllers
         {
             return _context.Contacts.Any(e => e.ContactId == id);
         }
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Web;
 
 namespace ContactsApp.Models
 {
@@ -28,6 +29,7 @@ namespace ContactsApp.Models
         [StringLength(300)]
         public string? Notes { get; set; }
         public int CategoryId { get; set; }
+
 
         [ForeignKey(nameof(CategoryId))]
         [InverseProperty("Contacts")]
