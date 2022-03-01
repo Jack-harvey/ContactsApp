@@ -52,13 +52,23 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Birthday)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Picture)
-        </dt>
-        <dd class = "col-sm-10">
-            <img src="@Html.DisplayFor(model => model.Picture)" class="img-thumbnail" alt="haroldPic">
+
+        @{
+            string altTextName = Model.Firstname;
             
-        </dd>
+        }
+
+        @if (Model.Picture.Length > 1)
+        {
+                         <dt class = "col-sm-2">
+                  @Html.DisplayNameFor(model => model.Picture)
+             </dt>
+
+             <dd class = "col-sm-10">
+             <img src="@Model.Picture" class="img-thumbnail" alt="@altTextName">
+             </dd>
+        }  
+        
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Notes)
         </dt>

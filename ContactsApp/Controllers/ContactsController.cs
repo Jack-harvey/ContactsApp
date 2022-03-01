@@ -161,7 +161,8 @@ namespace ContactsApp.Controllers
                     string fileExtension = Path.GetExtension(pictureUpload.FileName);
                     string fileName = $"{contact.Firstname}.{contact.Lastname}.{contact.ContactId}{fileExtension}";
                     string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
-                    contact.Picture = filePath;
+                    string filePathForDb = $"/images/{fileName}";
+                    contact.Picture = filePathForDb;
 
                     _context.Add(contact);
                     await _context.SaveChangesAsync();
