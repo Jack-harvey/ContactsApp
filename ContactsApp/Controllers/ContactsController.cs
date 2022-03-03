@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContactsApp.Data;
 using ContactsApp.Models;
+using FileSignatures;
+using FileSignatures.Formats;
 
 namespace ContactsApp.Controllers
 {
@@ -151,28 +153,21 @@ namespace ContactsApp.Controllers
         public async Task<IActionResult> Create(
             [Bind("Firstname,Lastname,CompanyId,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact, IFormFile pictureUpload)
         {
-
-
             bool fileExtensionValid = false;
+            var inspector = new FileFormatInspector();
+            var fileTypeInspection= inspector.DetermineFileFormat(pictureUpload.OpenReadStream());
 
-            string fileExtension = Path.GetExtension(pictureUpload.FileName);
-            if (fileExtension == ".png" || (fileExtension == ".jpg") || (fileExtension == ".jpeg") || (fileExtension == ".gif"))
+            if (fileTypeInspection is Image)
             {
                 fileExtensionValid = true;
             }
-
-
-
-
-
-
-
 
             try
             {
                 if (ModelState.IsValid && fileExtensionValid)
                 {
                     contact.ContactId = Guid.NewGuid();
+                    string fileExtension = Path.GetExtension(pictureUpload.FileName);
                     string fileName = $"{contact.Firstname}.{contact.Lastname}.{contact.ContactId}{fileExtension}";
                     string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
                     string filePathForDb = $"/images/{fileName}";
@@ -229,27 +224,19 @@ namespace ContactsApp.Controllers
         {
 
             bool fileExtensionValid = false;
+            var inspector = new FileFormatInspector();
+            var fileTypeInspection = inspector.DetermineFileFormat(pictureUpload.OpenReadStream());
 
-            string fileExtension = Path.GetExtension(pictureUpload.FileName);
-            if (fileExtension == ".png" || (fileExtension == ".jpg") || (fileExtension == ".jpeg") || (fileExtension == ".gif"))
+            if (fileTypeInspection is Image)
             {
                 fileExtensionValid = true;
             }
-
-            if (id != contact.ContactId)
-            {
-                return NotFound();
-            }
-
-
-
-
 
             if (ModelState.IsValid && fileExtensionValid)
             {
                 try
                 {
-                    
+                    string fileExtension = Path.GetExtension(pictureUpload.FileName);
                     string fileName = $"{contact.Firstname}.{contact.Lastname}.{contact.ContactId}{fileExtension}";
                     string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
                     string filePathForDb = $"/images/{fileName}";
