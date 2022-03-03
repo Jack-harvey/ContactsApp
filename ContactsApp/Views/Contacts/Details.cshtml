@@ -58,7 +58,7 @@
             
         }
 
-        @if (Model.Picture.Length > 1)
+        @if (!String.IsNullOrEmpty(Model.Picture))
         {
                          <dt class = "col-sm-2">
                   @Html.DisplayNameFor(model => model.Picture)

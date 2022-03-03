@@ -152,13 +152,27 @@ namespace ContactsApp.Controllers
             [Bind("Firstname,Lastname,CompanyId,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact, IFormFile pictureUpload)
         {
 
+
+            bool fileExtensionValid = false;
+
+            string fileExtension = Path.GetExtension(pictureUpload.FileName);
+            if (fileExtension == ".png" || (fileExtension == ".jpg") || (fileExtension == ".jpeg") || (fileExtension == ".gif"))
+            {
+                fileExtensionValid = true;
+            }
+
+
+
+
+
+
+
+
             try
             {
-                if (ModelState.IsValid)
+                if (ModelState.IsValid && fileExtensionValid)
                 {
                     contact.ContactId = Guid.NewGuid();
-
-                    string fileExtension = Path.GetExtension(pictureUpload.FileName);
                     string fileName = $"{contact.Firstname}.{contact.Lastname}.{contact.ContactId}{fileExtension}";
                     string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
                     string filePathForDb = $"/images/{fileName}";
@@ -210,21 +224,48 @@ namespace ContactsApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("ContactId,Firstname,Lastname,CompanyId,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact)
+        public async Task<IActionResult> Edit(Guid id, [Bind("ContactId,Firstname,Lastname,CompanyId,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact, IFormFile pictureUpload)
 
         {
+
+            bool fileExtensionValid = false;
+
+            string fileExtension = Path.GetExtension(pictureUpload.FileName);
+            if (fileExtension == ".png" || (fileExtension == ".jpg") || (fileExtension == ".jpeg") || (fileExtension == ".gif"))
+            {
+                fileExtensionValid = true;
+            }
+
             if (id != contact.ContactId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+
+
+
+
+            if (ModelState.IsValid && fileExtensionValid)
             {
                 try
                 {
+                    
+                    string fileName = $"{contact.Firstname}.{contact.Lastname}.{contact.ContactId}{fileExtension}";
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+                    string filePathForDb = $"/images/{fileName}";
+                    contact.Picture = filePathForDb;
+
+
                     _context.Update(contact);
                     await _context.SaveChangesAsync();
+
+                    using (FileStream fileStream = new(filePath, FileMode.Create))
+                    {
+                        await pictureUpload.CopyToAsync(fileStream);
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
+
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ContactExists(contact.ContactId))
