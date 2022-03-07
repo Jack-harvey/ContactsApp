@@ -154,10 +154,19 @@ namespace ContactsApp.Controllers
             [Bind("Firstname,Lastname,CompanyId,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact, IFormFile pictureUpload)
         {
             bool fileExtensionValid = false;
-            var inspector = new FileFormatInspector();
-            var fileTypeInspection= inspector.DetermineFileFormat(pictureUpload.OpenReadStream());
+            
+            if (pictureUpload != null)
+            {
+                var inspector = new FileFormatInspector();
+                var fileTypeInspection = inspector.DetermineFileFormat(pictureUpload.OpenReadStream());
 
-            if (fileTypeInspection is Image)
+                if (fileTypeInspection is Image)
+                {
+                    fileExtensionValid = true;
+                }
+
+            }
+            else
             {
                 fileExtensionValid = true;
             }
@@ -167,19 +176,23 @@ namespace ContactsApp.Controllers
                 if (ModelState.IsValid && fileExtensionValid)
                 {
                     contact.ContactId = Guid.NewGuid();
-                    string fileExtension = Path.GetExtension(pictureUpload.FileName);
-                    string fileName = $"{contact.Firstname}.{contact.Lastname}.{contact.ContactId}{fileExtension}";
-                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
-                    string filePathForDb = $"/images/{fileName}";
-                    contact.Picture = filePathForDb;
+                    if (pictureUpload != null)
+                    {
+                        string uploadTime = DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.ffffff");
+                        string fileExtension = Path.GetExtension(pictureUpload.FileName);
+                        string fileName = $"{contact.Firstname}.{contact.Lastname}.{uploadTime}{fileExtension}";
+                        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+                        string filePathForDb = $"/images/{fileName}";
+                        contact.Picture = filePathForDb;
+                        using (FileStream fileStream = new(filePath, FileMode.Create))
+                        {
+                            await pictureUpload.CopyToAsync(fileStream);
+                        }
+                    }
 
                     _context.Add(contact);
                     await _context.SaveChangesAsync();
 
-                    using (FileStream fileStream = new(filePath, FileMode.Create))
-                    {
-                        await pictureUpload.CopyToAsync(fileStream);
-                    }
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -224,32 +237,45 @@ namespace ContactsApp.Controllers
         {
 
             bool fileExtensionValid = false;
-            var inspector = new FileFormatInspector();
-            var fileTypeInspection = inspector.DetermineFileFormat(pictureUpload.OpenReadStream());
 
-            if (fileTypeInspection is Image)
+
+            if (pictureUpload == null)
             {
-                fileExtensionValid = true;
+                var inspector = new FileFormatInspector();
+                var fileTypeInspection = inspector.DetermineFileFormat(pictureUpload.OpenReadStream());
+
+                if (fileTypeInspection is Image)
+                {
+                    fileExtensionValid = true;
+                }
+
             }
+            else
+            {
+                fileExtensionValid=true;
+            }
+
 
             if (ModelState.IsValid && fileExtensionValid)
             {
                 try
                 {
-                    string fileExtension = Path.GetExtension(pictureUpload.FileName);
-                    string fileName = $"{contact.Firstname}.{contact.Lastname}.{contact.ContactId}{fileExtension}";
-                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
-                    string filePathForDb = $"/images/{fileName}";
-                    contact.Picture = filePathForDb;
-
+                    if (pictureUpload != null)
+                    {
+                        string uploadTime = DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.ffffff");
+                        string fileExtension = Path.GetExtension(pictureUpload.FileName);
+                        string fileName = $"{contact.Firstname}.{contact.Lastname}.{uploadTime}{fileExtension}";
+                        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+                        string filePathForDb = $"/images/{fileName}";
+                        contact.Picture = filePathForDb;
+                        using (FileStream fileStream = new(filePath, FileMode.Create))
+                        {
+                            await pictureUpload.CopyToAsync(fileStream);
+                        }
+                    }
 
                     _context.Update(contact);
                     await _context.SaveChangesAsync();
-
-                    using (FileStream fileStream = new(filePath, FileMode.Create))
-                    {
-                        await pictureUpload.CopyToAsync(fileStream);
-                    }
                     return RedirectToAction(nameof(Index));
                 }
 
