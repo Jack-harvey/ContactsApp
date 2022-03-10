@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -242,13 +243,16 @@ namespace ContactsApp.Controllers
         {
 
             bool fileExtensionValid = false;
-            bool contactPictureExistsPreviousToEdit = false;
+            //bool contactPictureExistsPreviousToEdit = false;
+            string previousContactPictureDbPath = "";
             string previousContactPicturePath = "";
 
-            if (contact.Picture != null)
+            if (!string.IsNullOrEmpty(contact.Picture))
             {
-                contactPictureExistsPreviousToEdit = true;
-                previousContactPicturePath = contact.Picture;
+                //contactPictureExistsPreviousToEdit = true;
+                previousContactPictureDbPath = contact.Picture;
+                previousContactPicturePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", previousContactPictureDbPath);
+
             }
 
 
@@ -286,8 +290,11 @@ namespace ContactsApp.Controllers
                             await pictureUpload.CopyToAsync(fileStream);
                             _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s Display picture was just saved to {filePath}");
                         }
-                        File.Delete(previousContactPicturePath);
+                        System.IO.File.Delete(previousContactPicturePath);
 
+
+
+                        _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s old isplay picture was just deleted, file name was {previousContactPicturePath}");
                     }
 
                     _context.Update(contact);
