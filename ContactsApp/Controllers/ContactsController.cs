@@ -15,10 +15,12 @@ namespace ContactsApp.Controllers
 {
     public class ContactsController : Controller
     {
+        private readonly ILogger<ContactsController> _logger;
         private readonly ContactsAppDataContext _context;
 
-        public ContactsController(ContactsAppDataContext context)
+        public ContactsController(ILogger<ContactsController> logger, ContactsAppDataContext context)
         {
+            _logger = logger;
             _context = context;
         }
 
@@ -187,11 +189,14 @@ namespace ContactsApp.Controllers
                         using (FileStream fileStream = new(filePath, FileMode.Create))
                         {
                             await pictureUpload.CopyToAsync(fileStream);
+                            _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s Display picture was just saved to {filePath}");  
                         }
                     }
 
                     _context.Add(contact);
                     await _context.SaveChangesAsync();
+
+                    _logger.LogInformation($"{contact.Firstname} {contact.Lastname} was just created");
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -237,6 +242,14 @@ namespace ContactsApp.Controllers
         {
 
             bool fileExtensionValid = false;
+            bool contactPictureExistsPreviousToEdit = false;
+            string previousContactPicturePath = "";
+
+            if (contact.Picture != null)
+            {
+                contactPictureExistsPreviousToEdit = true;
+                previousContactPicturePath = contact.Picture;
+            }
 
 
             if (pictureUpload == null)
@@ -271,7 +284,10 @@ namespace ContactsApp.Controllers
                         using (FileStream fileStream = new(filePath, FileMode.Create))
                         {
                             await pictureUpload.CopyToAsync(fileStream);
+                            _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s Display picture was just saved to {filePath}");
                         }
+                        File.Delete(previousContactPicturePath);
+
                     }
 
                     _context.Update(contact);
