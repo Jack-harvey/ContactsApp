@@ -24,7 +24,7 @@ try
     builder.Logging.ClearProviders();
     builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
     builder.Host.UseNLog();
-
+    
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.

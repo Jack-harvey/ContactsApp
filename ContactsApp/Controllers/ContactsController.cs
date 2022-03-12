@@ -18,11 +18,15 @@ namespace ContactsApp.Controllers
     {
         private readonly ILogger<ContactsController> _logger;
         private readonly ContactsAppDataContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
 
-        public ContactsController(ILogger<ContactsController> logger, ContactsAppDataContext context)
+        public ContactsController(ILogger<ContactsController> logger, ContactsAppDataContext context, IConfiguration configuration, IWebHostEnvironment environment)
         {
             _logger = logger;
             _context = context;
+            _configuration = configuration;
+            _environment = environment;
         }
 
         // GET: Contacts
@@ -243,20 +247,19 @@ namespace ContactsApp.Controllers
         {
 
             bool fileExtensionValid = false;
-            //bool contactPictureExistsPreviousToEdit = false;
-            string previousContactPictureDbPath = "";
             string previousContactPicturePath = "";
+            var rootPath = _environment.WebRootPath;
+            var imagesPath = Path.Combine(rootPath, _configuration.GetSection("ImagesPath").Value);
+
+            
 
             if (!string.IsNullOrEmpty(contact.Picture))
             {
-                //contactPictureExistsPreviousToEdit = true;
-                previousContactPictureDbPath = contact.Picture;
-                previousContactPicturePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", previousContactPictureDbPath);
-
+                previousContactPicturePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", contact.Picture[1..]);
             }
 
 
-            if (pictureUpload == null)
+            if (pictureUpload != null)
             {
                 var inspector = new FileFormatInspector();
                 var fileTypeInspection = inspector.DetermineFileFormat(pictureUpload.OpenReadStream());
@@ -290,11 +293,9 @@ namespace ContactsApp.Controllers
                             await pictureUpload.CopyToAsync(fileStream);
                             _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s Display picture was just saved to {filePath}");
                         }
+
                         System.IO.File.Delete(previousContactPicturePath);
-
-
-
-                        _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s old isplay picture was just deleted, file name was {previousContactPicturePath}");
+                        _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s old display picture was just deleted, file name was {previousContactPicturePath}");
                     }
 
                     _context.Update(contact);
@@ -302,10 +303,11 @@ namespace ContactsApp.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException dbEx)
                 {
                     if (!ContactExists(contact.ContactId))
                     {
+                        _logger.LogError(dbEx, "Bad things happened");
                         return NotFound();
                     }
                     else
