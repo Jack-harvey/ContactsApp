@@ -11,8 +11,10 @@ namespace ContactsApp.Models
         [Key]
         public Guid ContactId { get; set; }
         [StringLength(50)]
+        [RegularExpression("([a-zA-Z0-9_']+)", ErrorMessage = "Invalid Character in Name")]
         public string Firstname { get; set; } = null!;
         [StringLength(50)]
+        [RegularExpression("([a-zA-Z0-9_']+)", ErrorMessage = "Invalid Character in Name")]
         public string Lastname { get; set; } = null!;
         public Guid? CompanyId { get; set; }
         [StringLength(15)]
