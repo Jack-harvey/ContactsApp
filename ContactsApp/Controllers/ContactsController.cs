@@ -209,6 +209,9 @@ namespace ContactsApp.Controllers
             }
             catch (DbUpdateException dbUpdateExceptionHOWDOILOGTHIS)
             {
+
+                _logger.LogError(dbUpdateExceptionHOWDOILOGTHIS, "This is how you log it 😉");
+
                 //Log the error (uncomment ex variable name and write a log.
                 ModelState.AddModelError("", "Unable to save changes. " +
                     "Try again, and if the problem persists " +
@@ -227,13 +230,35 @@ namespace ContactsApp.Controllers
                 return NotFound();
             }
 
+
             var contact = await _context.Contacts.FindAsync(id);
+            bool contactPictureExists = false;
+            ViewBag.contactPictureShouldExist = true;
+
+            ViewBag.contactPictureExists = contactPictureExists;
+
+            if (!string.IsNullOrEmpty(contact.Picture))
+            {
+                if (System.IO.File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", contact.Picture[1..])))
+                {
+                    contactPictureExists = true;
+                    
+                }
+                else
+                {
+                    ViewBag.contactPictureShouldExist = false;
+                }
+            }
+            
             if (contact == null)
             {
                 return NotFound();
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(o => o.Description).Select(s => new { s.CategoryId, s.Description}), "CategoryId", "Description", contact.CategoryId);
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(o => o.CompanyName).Select(s => new { s.CompanyId, s.CompanyName }), "CompanyId", "CompanyName", contact.CompanyId);
+            ViewBag.contactPictureExists = contactPictureExists;
+            
+
             return View(contact);
         }
 

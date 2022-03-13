@@ -59,20 +59,33 @@
                 <span asp-validation-for="Picture" class="text-danger"></span>
             </div>
 
-            
-        @{
-            string altTextName = $"{Model.Firstname}'s display picture";
-            
-        }
 
-        @if (!string.IsNullOrEmpty(Model.Picture))
-        {
-                         <dt class = "col-sm-2">
-             </dt>
-             <dd class = "col-sm-10">
-             <img src="@Model.Picture" class="img-thumbnail" alt="@altTextName">
-             </dd>
-        }  
+            @{
+                string altTextName = $"{Model.Firstname}'s display picture";
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Picture))
+            {
+                @if (!ViewBag.contactPictureShouldExist)
+                {
+                    <dt class="col-sm-2">
+                    </dt>
+                    <dd class="col-sm-10">
+                        <img src="/Images/error.png" class="img-thumbnail" alt="@altTextName">
+                    </dd>
+                }
+                else
+                {
+                    <dt class="col-sm-2">
+                    </dt>
+                    <dd class="col-sm-10">
+                        <img src="@Model.Picture" class="img-thumbnail" alt="@altTextName">
+                    </dd>
+                }
+
+            }
+
+
 
             <div class="form-group">
                 <label asp-for="Notes" class="control-label"></label>
@@ -97,5 +110,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }
