@@ -331,15 +331,7 @@ namespace ContactsApp.Controllers
 
             if (pictureUpload != null)
             {
-                //var inspector = new FileFormatInspector();
-                //var fileTypeInspection = inspector.DetermineFileFormat(pictureUpload.OpenReadStream());
-
-                //if (fileTypeInspection is Image)
-                //{
-                //    fileExtensionValid = true;
-                //}
                 fileTypeValid = ImageFileTypeCheck(pictureUpload);
-
             }
             else
             {
@@ -353,19 +345,6 @@ namespace ContactsApp.Controllers
                 {
                     if (pictureUpload != null)
                     {
-
-                        //string uploadTime = DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.ffffff");
-                        //string fileExtension = Path.GetExtension(pictureUpload.FileName);
-                        //string fileName = $"{contact.Firstname}.{contact.Lastname}.{uploadTime}{fileExtension}";
-                        //string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
-                        
-                        //using (FileStream fileStream = new(filePath, FileMode.Create))
-                        //{
-                        //    await pictureUpload.CopyToAsync(fileStream);
-                            
-                        //}
-
-                        //string filePathForDb = $"/images/{fileName}";
                         contact.Picture = ImageSaver(pictureUpload, contact.Firstname, contact.Lastname);
                         _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s Display picture was just saved to {contact.Picture}");
                         //there's no checks on the below? idiot.
