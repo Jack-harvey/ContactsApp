@@ -29,6 +29,53 @@ namespace ContactsApp.Controllers
             _environment = environment;
         }
 
+
+        public bool ImageFileTypeCheck(IFormFile pictureUpload)
+        {
+
+            var inspector = new FileFormatInspector();
+            var fileTypeInspection = inspector.DetermineFileFormat(pictureUpload.OpenReadStream());
+            bool fileTypeImage = false;
+            if (fileTypeInspection is Image)
+                {
+                    fileTypeImage = true;
+                }
+
+            //one line fail 😡
+            //bool fileTypeImage(FileFormat fileTypeInspection) => fileTypeInspection is Image ? true : false;
+            return fileTypeImage;
+        }
+
+
+        public  string ImageSaver(IFormFile pictureUpload, string contactFirstName, string contactLastName)
+        {
+            string uploadTime = DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.ffffff");
+            string fileExtension = Path.GetExtension(pictureUpload.FileName);
+            string fileName = $"{contactFirstName}.{contactLastName}.{uploadTime}{fileExtension}";
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+            string filePathForDb = $"/images/{fileName}";
+
+            ImageSaverAsyncWorkaround(pictureUpload, filePath);
+
+            return filePathForDb;
+        }
+
+        public async void ImageSaverAsyncWorkaround(IFormFile pictureUpload, string filePath)
+        {
+            using (FileStream fileStream = new(filePath, FileMode.Create))
+            {
+                await pictureUpload.CopyToAsync(fileStream);
+            }
+        }
+
+
+
+
+
+
+
+
+
         // GET: Contacts
         public async Task<IActionResult> Index(string searchString)
         {
@@ -39,7 +86,7 @@ namespace ContactsApp.Controllers
             ViewData["CategoryIdSortParm"] = "Category";
             ViewData["rowsOnEachPage"] = 8;
 
-            
+
 
             ViewData["CurrentFilter"] = searchString;
 
@@ -56,8 +103,8 @@ namespace ContactsApp.Controllers
 
             contacts = contacts.OrderBy(c => c.Lastname);
 
-            return View(await PaginatedList<Contact>.CreateAsync(contacts.AsNoTracking(),1,8));
-            
+            return View(await PaginatedList<Contact>.CreateAsync(contacts.AsNoTracking(), 1, 8));
+
         }
 
         [HttpPost]
@@ -74,7 +121,7 @@ namespace ContactsApp.Controllers
             ViewData["CompanySortParm"] = sortOrder == "Company" ? "Company_desc" : "Company";
             ViewData["CategoryIdSortParm"] = sortOrder == "Category" ? "Category_desc" : "Category";
             ViewData["rowsOnEachPage"] = rowsOnEachPage;
-            
+
 
             ViewData["CurrentFilter"] = searchString;
 
@@ -145,8 +192,6 @@ namespace ContactsApp.Controllers
         // GET: Contacts/Create
         public IActionResult Create()
         {
-            //ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
-            //ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId, CompanyId");
             ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(o => o.Description).Select(s => new { s.CategoryId, s.Description }), "CategoryId", "Description");
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(o => o.CompanyName).Select(s => new { s.CompanyId, s.CompanyName }), "CompanyId", "CompanyName");
             return View();
@@ -161,7 +206,7 @@ namespace ContactsApp.Controllers
             [Bind("Firstname,Lastname,CompanyId,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact, IFormFile pictureUpload)
         {
             bool fileExtensionValid = false;
-            
+
             if (pictureUpload != null)
             {
                 var inspector = new FileFormatInspector();
@@ -194,7 +239,7 @@ namespace ContactsApp.Controllers
                         using (FileStream fileStream = new(filePath, FileMode.Create))
                         {
                             await pictureUpload.CopyToAsync(fileStream);
-                            _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s Display picture was just saved to {filePath}");  
+                            _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s Display picture was just saved to {filePath}");
                         }
                     }
 
@@ -242,22 +287,22 @@ namespace ContactsApp.Controllers
                 if (System.IO.File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", contact.Picture[1..])))
                 {
                     contactPictureExists = true;
-                    
+
                 }
                 else
                 {
                     ViewBag.contactPictureShouldExist = false;
                 }
             }
-            
+
             if (contact == null)
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(o => o.Description).Select(s => new { s.CategoryId, s.Description}), "CategoryId", "Description", contact.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(o => o.Description).Select(s => new { s.CategoryId, s.Description }), "CategoryId", "Description", contact.CategoryId);
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(o => o.CompanyName).Select(s => new { s.CompanyId, s.CompanyName }), "CompanyId", "CompanyName", contact.CompanyId);
             ViewBag.contactPictureExists = contactPictureExists;
-            
+
 
             return View(contact);
         }
@@ -271,12 +316,12 @@ namespace ContactsApp.Controllers
 
         {
 
-            bool fileExtensionValid = false;
+            bool fileTypeValid = false;
             string previousContactPicturePath = "";
             var rootPath = _environment.WebRootPath;
             var imagesPath = Path.Combine(rootPath, _configuration.GetSection("ImagesPath").Value);
 
-            
+
 
             if (!string.IsNullOrEmpty(contact.Picture))
             {
@@ -286,39 +331,44 @@ namespace ContactsApp.Controllers
 
             if (pictureUpload != null)
             {
-                var inspector = new FileFormatInspector();
-                var fileTypeInspection = inspector.DetermineFileFormat(pictureUpload.OpenReadStream());
+                //var inspector = new FileFormatInspector();
+                //var fileTypeInspection = inspector.DetermineFileFormat(pictureUpload.OpenReadStream());
 
-                if (fileTypeInspection is Image)
-                {
-                    fileExtensionValid = true;
-                }
+                //if (fileTypeInspection is Image)
+                //{
+                //    fileExtensionValid = true;
+                //}
+                fileTypeValid = ImageFileTypeCheck(pictureUpload);
 
             }
             else
             {
-                fileExtensionValid=true;
+                fileTypeValid = true;
             }
 
 
-            if (ModelState.IsValid && fileExtensionValid)
+            if (ModelState.IsValid && fileTypeValid)
             {
                 try
                 {
                     if (pictureUpload != null)
                     {
-                        string uploadTime = DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.ffffff");
-                        string fileExtension = Path.GetExtension(pictureUpload.FileName);
-                        string fileName = $"{contact.Firstname}.{contact.Lastname}.{uploadTime}{fileExtension}";
-                        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
-                        string filePathForDb = $"/images/{fileName}";
-                        contact.Picture = filePathForDb;
-                        using (FileStream fileStream = new(filePath, FileMode.Create))
-                        {
-                            await pictureUpload.CopyToAsync(fileStream);
-                            _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s Display picture was just saved to {filePath}");
-                        }
 
+                        //string uploadTime = DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.ffffff");
+                        //string fileExtension = Path.GetExtension(pictureUpload.FileName);
+                        //string fileName = $"{contact.Firstname}.{contact.Lastname}.{uploadTime}{fileExtension}";
+                        //string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+                        
+                        //using (FileStream fileStream = new(filePath, FileMode.Create))
+                        //{
+                        //    await pictureUpload.CopyToAsync(fileStream);
+                            
+                        //}
+
+                        //string filePathForDb = $"/images/{fileName}";
+                        contact.Picture = ImageSaver(pictureUpload, contact.Firstname, contact.Lastname);
+                        _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s Display picture was just saved to {contact.Picture}");
+                        //there's no checks on the below? idiot.
                         System.IO.File.Delete(previousContactPicturePath);
                         _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s old display picture was just deleted, file name was {previousContactPicturePath}");
                     }
