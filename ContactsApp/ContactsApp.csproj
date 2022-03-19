@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\zContactsController.cs" />
     <Compile Remove="Data\DbInitializer.cs" />
   </ItemGroup>
 

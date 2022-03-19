@@ -63,29 +63,11 @@
             @{
                 string altTextName = $"{Model.Firstname}'s display picture";
             }
-
-            @if (!string.IsNullOrEmpty(Model.Picture))
-            {
-                @if (!ViewBag.contactPictureShouldExist)
-                {
-                    <dt class="col-sm-2">
-                    </dt>
-                    <dd class="col-sm-10">
-                        <img src="/Images/error.png" class="img-thumbnail" alt="@altTextName">
-                    </dd>
-                }
-                else
-                {
-                    <dt class="col-sm-2">
-                    </dt>
-                    <dd class="col-sm-10">
-                        <img src="@Model.Picture" class="img-thumbnail" alt="@altTextName">
-                    </dd>
-                }
-
-            }
-
-
+            <dt class="col-sm-2">
+            </dt>
+            <dd class="col-sm-10">
+                <img src="@ViewBag.contactPictureToUse" class="img-thumbnail" alt="@altTextName">
+            </dd>
 
             <div class="form-group">
                 <label asp-for="Notes" class="control-label"></label>

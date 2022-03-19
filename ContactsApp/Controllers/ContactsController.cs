@@ -32,22 +32,15 @@ namespace ContactsApp.Controllers
 
         public bool ImageFileTypeCheck(IFormFile pictureUpload)
         {
-
             var inspector = new FileFormatInspector();
             var fileTypeInspection = inspector.DetermineFileFormat(pictureUpload.OpenReadStream());
-            bool fileTypeImage = false;
-            if (fileTypeInspection is Image)
-                {
-                    fileTypeImage = true;
-                }
-
-            //one line fail 😡
-            //bool fileTypeImage(FileFormat fileTypeInspection) => fileTypeInspection is Image ? true : false;
+            bool fileTypeImage = fileTypeInspection is Image;
+            //bool fileTypeImage = fileTypeInspection.GetType() == typeof(Image);
             return fileTypeImage;
         }
 
 
-        public  string ImageSaver(IFormFile pictureUpload, string contactFirstName, string contactLastName)
+        public async Task<string> ImageSaver(IFormFile pictureUpload, string contactFirstName, string contactLastName)
         {
             string uploadTime = DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.ffffff");
             string fileExtension = Path.GetExtension(pictureUpload.FileName);
@@ -55,25 +48,26 @@ namespace ContactsApp.Controllers
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
             string filePathForDb = $"/images/{fileName}";
 
-            ImageSaverAsyncWorkaround(pictureUpload, filePath);
-
-            return filePathForDb;
-        }
-
-        public async void ImageSaverAsyncWorkaround(IFormFile pictureUpload, string filePath)
-        {
             using (FileStream fileStream = new(filePath, FileMode.Create))
             {
                 await pictureUpload.CopyToAsync(fileStream);
             }
+
+            return filePathForDb;
         }
 
+        public string DoesDbPicPathExistForGivenContact(string pathFromDb)
+        {
 
+            if (string.IsNullOrEmpty(pathFromDb))
+                return "/Images/default.png";
 
+            bool filePathExists = System.IO.File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", pathFromDb[1..]));
+            if (!filePathExists)
+                return "/Images/error.png";
 
-
-
-
+            return pathFromDb;
+        }
 
 
         // GET: Contacts
@@ -89,7 +83,7 @@ namespace ContactsApp.Controllers
 
 
             ViewData["CurrentFilter"] = searchString;
-
+            //return View();
 
             var contacts = from c in _context.Contacts
                            .Include(cat => cat.Category)
@@ -186,6 +180,7 @@ namespace ContactsApp.Controllers
                 return NotFound();
             }
 
+            ViewBag.contactPictureToUse = DoesDbPicPathExistForGivenContact(contact.Picture);
             return View(contact);
         }
 
@@ -205,42 +200,28 @@ namespace ContactsApp.Controllers
         public async Task<IActionResult> Create(
             [Bind("Firstname,Lastname,CompanyId,Mobile,Phone,Email,Birthday,Picture,Notes,CategoryId")] Contact contact, IFormFile pictureUpload)
         {
-            bool fileExtensionValid = false;
+            bool fileTypeValid = false;
 
             if (pictureUpload != null)
             {
-                var inspector = new FileFormatInspector();
-                var fileTypeInspection = inspector.DetermineFileFormat(pictureUpload.OpenReadStream());
-
-                if (fileTypeInspection is Image)
-                {
-                    fileExtensionValid = true;
-                }
-
+                fileTypeValid = ImageFileTypeCheck(pictureUpload);
             }
             else
             {
-                fileExtensionValid = true;
+                fileTypeValid = true;
             }
+
 
             try
             {
-                if (ModelState.IsValid && fileExtensionValid)
+                if (ModelState.IsValid && fileTypeValid)
                 {
                     contact.ContactId = Guid.NewGuid();
                     if (pictureUpload != null)
                     {
-                        string uploadTime = DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.ffffff");
-                        string fileExtension = Path.GetExtension(pictureUpload.FileName);
-                        string fileName = $"{contact.Firstname}.{contact.Lastname}.{uploadTime}{fileExtension}";
-                        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
-                        string filePathForDb = $"/images/{fileName}";
-                        contact.Picture = filePathForDb;
-                        using (FileStream fileStream = new(filePath, FileMode.Create))
-                        {
-                            await pictureUpload.CopyToAsync(fileStream);
-                            _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s Display picture was just saved to {filePath}");
-                        }
+                        contact.Picture = await ImageSaver(pictureUpload, contact.Firstname, contact.Lastname);
+                        _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s Display picture was just saved to {contact.Picture}");
+
                     }
 
                     _context.Add(contact);
@@ -275,25 +256,9 @@ namespace ContactsApp.Controllers
                 return NotFound();
             }
 
-
             var contact = await _context.Contacts.FindAsync(id);
-            bool contactPictureExists = false;
-            ViewBag.contactPictureShouldExist = true;
 
-            ViewBag.contactPictureExists = contactPictureExists;
-
-            if (!string.IsNullOrEmpty(contact.Picture))
-            {
-                if (System.IO.File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", contact.Picture[1..])))
-                {
-                    contactPictureExists = true;
-
-                }
-                else
-                {
-                    ViewBag.contactPictureShouldExist = false;
-                }
-            }
+            ViewBag.contactPictureToUse = DoesDbPicPathExistForGivenContact(contact.Picture);
 
             if (contact == null)
             {
@@ -301,7 +266,7 @@ namespace ContactsApp.Controllers
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(o => o.Description).Select(s => new { s.CategoryId, s.Description }), "CategoryId", "Description", contact.CategoryId);
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(o => o.CompanyName).Select(s => new { s.CompanyId, s.CompanyName }), "CompanyId", "CompanyName", contact.CompanyId);
-            ViewBag.contactPictureExists = contactPictureExists;
+            
 
 
             return View(contact);
@@ -317,6 +282,7 @@ namespace ContactsApp.Controllers
         {
 
             bool fileTypeValid = false;
+            bool imageExisted = false;
             string previousContactPicturePath = "";
             var rootPath = _environment.WebRootPath;
             var imagesPath = Path.Combine(rootPath, _configuration.GetSection("ImagesPath").Value);
@@ -326,6 +292,7 @@ namespace ContactsApp.Controllers
             if (!string.IsNullOrEmpty(contact.Picture))
             {
                 previousContactPicturePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", contact.Picture[1..]);
+                imageExisted = true;
             }
 
 
@@ -345,11 +312,16 @@ namespace ContactsApp.Controllers
                 {
                     if (pictureUpload != null)
                     {
-                        contact.Picture = ImageSaver(pictureUpload, contact.Firstname, contact.Lastname);
+                        contact.Picture = await ImageSaver(pictureUpload, contact.Firstname, contact.Lastname);
                         _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s Display picture was just saved to {contact.Picture}");
-                        //there's no checks on the below? idiot.
-                        System.IO.File.Delete(previousContactPicturePath);
-                        _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s old display picture was just deleted, file name was {previousContactPicturePath}");
+
+
+                        if (imageExisted)
+                        {
+                            System.IO.File.Delete(previousContactPicturePath);
+                            _logger.LogInformation($"{contact.Firstname} {contact.Lastname}'s old display picture was just deleted, file name was {previousContactPicturePath}");
+                        }
+                       
                     }
 
                     _context.Update(contact);

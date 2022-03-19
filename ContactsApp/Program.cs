@@ -17,8 +17,8 @@ try
 
     // Add services to the container.
     builder.Services
-        .AddControllersWithViews()
-        .AddRazorRuntimeCompilation();
+        .AddControllersWithViews();
+        //.AddRazorRuntimeCompilation();
 
     // NLog: Setup NLog for Dependency injection
     builder.Logging.ClearProviders();
