@@ -19,6 +19,7 @@
     <None Include="nlog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="wwwroot\css\stylesheet.css" />
     <None Include="wwwroot\Images\testImage.jpg" />
     <None Include="wwwroot\Images\testImage.png" />
   </ItemGroup>

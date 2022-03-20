@@ -14,8 +14,10 @@
     <div class="form-actions no-color">
         <p>
             Find by name: <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Back to Full List</a>
+            <button id=searchButton type="submit" class="btn btn-default">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                </button>|
+            <a id=eraseSearch asp-action="Index"><i class="fa-solid fa-eraser"></i></a>
         </p>
     </div>
 
@@ -25,7 +27,7 @@
 
 </form>
 
-<table class="table">
+<table class="table table-hover">
     <thead>
         <tr>
             <th>
@@ -59,7 +61,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr onclick="location.href ='@(Url.Action("Details", "Contacts", new { id = item.ContactId}))'" >
                 <td>
                     @Html.DisplayFor(modelItem => item.Firstname)
                 </td>
@@ -72,8 +74,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Mobile)
                 </td>
-                <td>
+                <td id="emailTableData">
                     @Html.DisplayFor(modelItem => item.Email)
+                    @*<a name="emailStopLink">@Html.DisplayFor(modelItem => item.Email</a>)*@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Birthday)
@@ -82,9 +85,9 @@
                     @Html.DisplayFor(modelItem => item.Category.Description)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ContactId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ContactId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ContactId">Delete</a>
+                    @*<a id="detailLink" asp-action="Details" asp-route-id="@item.ContactId"><i class="fa-solid fa-address-card"></i></a> |*@
+                    <a id="editLink" asp-action="Edit" asp-route-id="@item.ContactId"><i class="fa-solid fa-pen-to-square"></i></a> |
+                    <a id="deleteLink" asp-action="Delete" asp-route-id="@item.ContactId"><i class="fa-solid fa-trash-can"></i></a>
                 </td>
             </tr>
         }
@@ -100,7 +103,7 @@
 <button id="btnPrev" type="button" class="btn btn-primary @prevDisabled" @prevDisabled>Previous</button>
 <button id="btnNext" type="button" class="btn btn-primary @nextDisabled" @nextDisabled>Next</button>
 
-<select id="ddNumPages" class="form-select">
+<select id="ddNumPages" class="form-select form-select-sm">
     <option selected="@(rowsOnEachPage == 8)" value="8">8</option>
     <option selected="@(rowsOnEachPage == 16)" value="16">16</option>
     <option selected="@(rowsOnEachPage == 32)" value="32">32</option>

@@ -1,0 +1,146 @@
+.draculaBackground {
+  color: #282a36;
+}
+.draculaForeground {
+  color: #f8f8f2;
+}
+.draculaSelection {
+  color: #44475a;
+}
+.draculaComment {
+  color: #6272a4;
+}
+.draculaRed {
+  color: #ff5555;
+}
+.draculaOrange {
+  color: #ffb86c;
+}
+.draculaYellow {
+  color: #f1fa8c;
+}
+.draculaGreen {
+  color: #50fa7b;
+}
+.draculaPurple {
+  color: #bd93f9;
+}
+.draculaCyan {
+  color: #8be9fd;
+}
+.draculaPink {
+  color: #ff79c6;
+}
+
+.table tbody td,
+.table tbody th {
+  color: #f8f8f2;
+}
+
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th {
+  background-color: #44475a;
+  color: #f8f8f2;
+}
+
+.btn {
+  background-color: #50fa7b;
+  color: #282a36;
+  border: #282a36;
+}
+.btn btn-primary disabled {
+  background-color: #84d99a;
+  color: #282a36;
+}
+
+.navbar {
+  background-color: #44475a;
+  color: #f8f8f2;
+}
+
+.nav-link {
+  color: #f8f8f2 !important;
+}
+
+.navbar-brand {
+  color: #f8f8f2 !important;
+}
+
+.form-select {
+  background-color: #282a36;
+  color: #f8f8f2;
+  border-color: #bd93f9;
+  width: 66px;
+}
+
+#editLink {
+  color: #ffb86c;
+  font-size: 17px;
+}
+#deleteLink {
+  color: #ff5555;
+  font-size: 17px;
+}
+
+#searchButton {
+  background-color: #282a36;
+  color: #ffb86c;
+  padding: 5px 5px;
+  font-size: 17px;
+}
+#eraseSearch {
+  color: #6272a4;
+  font-size: 17px;
+}
+
+#emailTableData {
+  color: #f8f8f2;
+}
+
+input {
+  background-color: #282a36;
+  border: #bd93f9 1px solid;
+  border-radius: 4px;
+  color: #f8f8f2;
+  height: 27px;
+}
+
+body {
+  background-color: #282a36;
+  color: #f8f8f2;
+  font-family: "Fira Code", monospace;
+  font-size: 14px;
+}
+
+a {
+  color: #ff79c6;
+}
+a:hover {
+  color: #50fa7b;
+}
+thead {
+  background-color: #282a36;
+  color: #f8f8f2;
+}
+
+td a {
+  color: #f8f8f2;
+  text-decoration: none;
+}
+
+thead a {
+  background-color: #282a36;
+  color: #ff79c6;
+}
+
+form {
+  color: #f8f8f2;
+}
+
+header {
+  background-color: #bd93f9;
+}
+
+tr {
+  cursor: pointer;
+}

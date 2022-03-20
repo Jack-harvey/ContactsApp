@@ -25,6 +25,7 @@ namespace ContactsApp.Models
         [EmailAddress]
         public string? Email { get; set; }
         [Column(TypeName = "date")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? Birthday { get; set; }
         [StringLength(255)]
         public string? Picture { get; set; }
