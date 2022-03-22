@@ -1,0 +1,153 @@
+﻿.draculaBackground {
+    color: #282a36;
+}
+
+.draculaForeground {
+    color: #f8f8f2;
+}
+
+.draculaSelection {
+    color: #44475a;
+}
+
+.draculaComment {
+    color: #6272a4;
+}
+
+.draculaRed {
+    color: #ff5555;
+}
+
+.draculaOrange {
+    color: #ffb86c;
+}
+
+.draculaYellow {
+    color: #f1fa8c;
+}
+
+.draculaGreen {
+    color: #50fa7b;
+}
+
+.draculaPurple {
+    color: #bd93f9;
+}
+
+.draculaCyan {
+    color: #8be9fd;
+}
+
+.draculaPink {
+    color: #ff79c6;
+}
+
+.table tbody td,
+.table tbody th {
+    color: #f8f8f2;
+}
+
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th {
+    background-color: #44475a;
+    color: #f8f8f2;
+}
+
+.btn {
+    background-color: #50fa7b;
+    color: #282a36;
+    border: #282a36;
+}
+
+.btn-primary.disabled {
+    background-color: #84d99a;
+    color: #282a36;
+    border: #282a36;
+}
+
+.navbar {
+    background-color: #44475a;
+    color: #f8f8f2;
+}
+
+.nav-link {
+    color: #f8f8f2 !important;
+}
+
+.navbar-brand {
+    color: #f8f8f2 !important;
+}
+
+.form-select {
+    background-color: #282a36;
+    color: #f8f8f2;
+    border-color: #bd93f9;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23bd93f9' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+
+#editLink {
+    color: #ffb86c;
+}
+
+#deleteLink {
+    color: #ff5555;
+}
+
+#searchButton {
+    background-color: #282a36;
+    color: #ffb86c;
+}
+
+#eraseSearch {
+    color: #6272a4;
+}
+
+#emailTableData {
+    color: #f8f8f2;
+}
+
+#draculaBat {
+    color: #bd93f9;
+    font-family: Arial;
+}
+
+input {
+    background-color: #282a36;
+    border: #bd93f9 1px solid;
+    color: #f8f8f2;
+}
+
+body {
+    background-color: #282a36;
+    color: #f8f8f2;
+}
+
+a {
+    color: #ff79c6;
+}
+
+    a:hover {
+        color: #50fa7b;
+    }
+
+thead {
+    background-color: #282a36;
+    color: #ff79c6;
+}
+
+td a {
+    color: #f8f8f2;
+}
+
+th a {
+    background-color: #282a36;
+    color: #ff79c6;
+}
+
+form {
+    color: #f8f8f2;
+}
+
+header {
+    background-color: #bd93f9;
+}

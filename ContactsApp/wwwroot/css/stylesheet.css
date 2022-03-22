@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+.form-select {
+    width: 66px;
+}
+
+#editLink {
+=======
 .draculaBackground {
   color: #282a36;
 }
@@ -78,72 +85,39 @@
 
 #editLink {
     color: #ffb86c;
+>>>>>>> 1e2690e (Apply colors to previous and dropdown)
     font-size: 17px;
 }
+
 #deleteLink {
-  color: #ff5555;
-  font-size: 17px;
+    font-size: 17px;
 }
 
 #searchButton {
-  background-color: #282a36;
-  color: #ffb86c;
-  padding: 5px 5px;
-  font-size: 17px;
-}
-#eraseSearch {
-  color: #6272a4;
-  font-size: 17px;
+    padding: 5px 5px;
+    font-size: 17px;
 }
 
-#emailTableData {
-  color: #f8f8f2;
+#eraseSearch {
+    font-size: 17px;
 }
 
 input {
-  background-color: #282a36;
-  border: #bd93f9 1px solid;
-  border-radius: 4px;
-  color: #f8f8f2;
-  height: 27px;
+    border-radius: 4px;
+    height: 27px;
 }
 
 body {
-  background-color: #282a36;
-  color: #f8f8f2;
-  font-family: "Fira Code", monospace;
-  font-size: 14px;
+    font-family: "Fira Code", monospace;
+    font-size: 14px;
 }
 
-a {
-  color: #ff79c6;
-}
-a:hover {
-  color: #50fa7b;
-}
-thead {
-  background-color: #282a36;
-  color: #f8f8f2;
-}
 
 td a {
-  color: #f8f8f2;
-  text-decoration: none;
+    text-decoration: none;
 }
 
-thead a {
-  background-color: #282a36;
-  color: #ff79c6;
-}
-
-form {
-  color: #f8f8f2;
-}
-
-header {
-  background-color: #bd93f9;
-}
 
 tr {
-  cursor: pointer;
+    cursor: pointer;
 }
