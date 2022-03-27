@@ -19,6 +19,14 @@ namespace ContactsApp.Controllers
             _context = context;
         }
 
+
+        public JsonResult UsernameAndTheme(int userId)
+        {
+            var users = _context.Users;
+            var userIdInDb = users.Where(s => s.UserId.Equals(userId));
+            return Json(userIdInDb);
+        }
+
         public IActionResult Index()
         {
             return View();

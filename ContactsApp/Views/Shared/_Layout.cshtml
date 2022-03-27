@@ -8,15 +8,22 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ContactsApp.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/stylesheet.css" />
-    <link rel="stylesheet" href="~/css/Dracula.css" />
+    <link rel="stylesheet" href="~/css/themes.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/c497490f3d.js" crossorigin="anonymous"></script>
 </head>
-<body>
+
+<div>
+    <form>
+        <input type="hidden" id="IdInputField" name="user-id" value="Dracula" />
+    </form>
+</div>
+
+<body class=dracula-theme>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
+        <nav id="sharedNavBar" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ContactsApp</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -44,6 +51,14 @@
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                    <select id="userLoginSelect" class="form-select form-select-sm">
+                        <option selected="Default" value="2">Default</option>
+                        <option value="1">Jack</option>
+                    </select>
+
+                    <button id="theme-toggle" type="button" class="btn btn-default" class="theme-toggle">
+                        <i class="fa-solid fa-circle-half-stroke"></i>
+                    </button>
                 </div>
             </div>
         </nav>
@@ -62,6 +77,8 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/themeSwitch.js"></script>
+    <script src="~/js/UserPreference.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

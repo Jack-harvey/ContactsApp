@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using ContactsApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace ContactsApp.Data
+namespace ContactsApp.tempModel
 {
     public partial class ContactsAppDataContext : DbContext
     {
@@ -22,14 +21,15 @@ namespace ContactsApp.Data
         public virtual DbSet<CompanyOffice> CompanyOffices { get; set; } = null!;
         public virtual DbSet<Contact> Contacts { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<VwCompanyCount> VwCompanyCounts { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-//                optionsBuilder.UseSqlServer("Server=localhost;Database=ContactsAppData;Trusted_Connection=True;");
-//            }
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=localhost;Database=ContactsAppData;Trusted_Connection=True;");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -69,6 +69,11 @@ namespace ContactsApp.Data
             modelBuilder.Entity<User>(entity =>
             {
                 entity.Property(e => e.UserId).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<VwCompanyCount>(entity =>
+            {
+                entity.ToView("vwCompanyCount");
             });
 
             OnModelCreatingPartial(modelBuilder);

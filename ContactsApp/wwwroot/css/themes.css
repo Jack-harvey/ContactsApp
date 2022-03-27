@@ -1,0 +1,193 @@
+:root {
+  --draculaBackground: #282a36;
+  --draculaForeground: #f8f8f2;
+  --draculaSelection: #44475a;
+  --draculaComment: #6272a4;
+  --draculaAccent1: #ff5555;
+  --draculaAccent2: #ffb86c;
+  --draculaAccent3: #f1fa8c;
+  --draculaAccent4: #50fa7b;
+  --draculaAccent5: #bd93f9;
+  --draculaAccent6: #8be9fd;
+  --draculaAccent7: #ff79c6;
+  --draculaContrast: #21222c;
+  /* stroke='%23XXXXXX' replace with hex code */
+  --draculaChevron: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23bd93f9' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  --draculaSpanBar: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23bd93f9' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  --atomOneDarkBackground: #282c34;
+  --atomOneDarkForeground: #abb2bf;
+  --atomOneDarkSelection: #4b5263;
+  --atomOneDarkComment: #5c6370;
+  --atomOneDarkAccent1: #e06c75;
+  --atomOneDarkAccent2: #d19a66;
+  --atomOneDarkAccent3: #e5c07b;
+  --atomOneDarkAccent4: #98c379;
+  --atomOneDarkAccent5: #c678dd;
+  --atomOneDarkAccent6: #56b6c2;
+  --atomOneDarkAccent7: #61afef;
+  --atomOneDarkConstrast: #17191e;
+  /* stroke='%23XXXXXX' replace with hex code */
+  --atomOneDarkChevron: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23c678dd' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  --atomOneDarkSpanBar: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23c678dd' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.dracula-theme {
+  --mainBackground: var(--draculaBackground);
+  --fontColor: var(--draculaForeground);
+  --accentSelection: var(--draculaSelection);
+  --accentPrimary: var(--draculaAccent7);
+  --accentSecondary: var(--draculaAccent5);
+  --accentWarning: var(--draculaAccent1);
+  --accentOption: var(--draculaAccent2);
+  --accentComment: var(--draculaComment);
+  --contrastBackground: var(--draculaContrast);
+
+  --selectListChevronColor: var(--draculaChevron);
+  --spanNavBarColor: var(--draculaSpanBar);
+}
+
+.atom-one-dark-theme {
+  --mainBackground: var(--atomOneDarkBackground);
+  --fontColor: var(--atomOneDarkForeground);
+  --accentSelection: var(--atomOneDarkSelection);
+  --accentPrimary: var(--atomOneDarkAccent7);
+  --accentSecondary: var(--atomOneDarkAccent5);
+  --accentWarning: var(--atomOneDarkAccent1);
+  --accentOption: var(--atomOneDarkAccent2);
+  --accentComment: var(--atomOneDarkComment);
+  --contrastBackground: var(--atomOneDarkConstrast);
+
+  --selectListChevronColor: var(--atomOneDarkChevron);
+  --spanNavBarColor: var(--atomOneDarkSpanBar);
+}
+
+*:focus {
+  box-shadow: none !important;
+}
+
+main {
+  background-color: var(--mainBackground) !important;
+}
+
+.table tbody td,
+.table tbody th {
+  color: var(--fontColor);
+}
+
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th {
+  background-color: var(--accentSelection);
+  color: var(--fontColor);
+}
+
+.btn {
+  background-color: var(--mainBackground);
+  color: var(--fontColor);
+  border-color: var(--accentSecondary);
+}
+
+.btn:hover {
+  background-color: var(--accentSelection);
+  color: var(--fontColor);
+  border-color: var(--accentSecondary);
+}
+
+.btn:focus {
+  background-color: var(--accentSelection);
+  border-color: var(--accentSecondary);
+}
+
+.btn-primary.disabled {
+  background-color: var(--mainBackground);
+  color: var(--fontColor);
+  border-color: var(--accentSecondary);
+}
+
+.navbar {
+  background-color: var(--accentComment);
+  color: var(--fontColor);
+}
+
+.navbar-light .navbar-toggler-icon {
+  background-image: var(--spanNavBarColor);
+}
+
+.nav-link {
+  color: var(--fontColor) !important;
+}
+
+.navbar-brand {
+  color: var(--fontColor) !important;
+}
+
+.form-select {
+  background-color: var(--mainBackground);
+  color: var(--fontColor);
+  border-color: var(--accentSecondary);
+  background-image: var(--selectListChevronColor);
+}
+
+.form-select:focus {
+  border-color: var(--accentSecondary);
+}
+
+#editLink {
+  color: var(--accentOption);
+}
+
+#deleteLink {
+  color: var(--accentWarning);
+}
+
+#searchButton {
+  color: var(--accentPrimary);
+  border-color: var(--mainBackground);
+}
+
+#eraseSearch {
+  color: var(--accentWarning);
+  border-color: var(--mainBackground);
+}
+
+#theme-toggle {
+  color: var(--fontColor);
+  border-color: var(--contrastBackground);
+  background-color: var(--contrastBackground);
+}
+
+#sharedNavBar {
+  background-color: var(--contrastBackground);
+}
+
+input {
+  color: var(--accentSecondary);
+}
+
+body {
+  background-color: var(--mainBackground);
+  color: var(--fontColor);
+}
+
+td a {
+  color: var(--fontColor);
+}
+
+td:hover {
+  color: var(--accentSecondary);
+}
+
+th a {
+  color: var(--fontColor);
+}
+
+th {
+  color: var(--fontColor);
+}
+
+a {
+  color: var(--accentPrimary);
+}
+
+footer {
+  background-color: var(--contrastBackground);
+}

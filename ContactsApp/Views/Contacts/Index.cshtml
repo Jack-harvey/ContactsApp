@@ -5,28 +5,39 @@
 }
 
 <h1>Index - oF dOOM!</h1>
-<h5 id=draculaBat>(㇏(•̀ᵥᵥ•́)ノ)</h5>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 
-<form asp-action="Index" method="POST">
-    <div class="form-actions no-color">
+<div class="d-flex">
+    <div class="flex-grow-1 ps-2">
         <p>
-            Find by name: <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
-            <button id=searchButton type="submit" class="btn btn-default">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                </button>|
-            <a id=eraseSearch asp-action="Index"><i class="fa-solid fa-eraser"></i></a>
+            <a asp-action="Create">Create New</a>
         </p>
+
     </div>
+    <div class="flex-grow-1">
+        <h5 id=draculaBat>(㇏(•̀ᵥᵥ•́)ノ)</h5>
+    </div>
+    <div class="ps-2">
+        <form asp-action="Index" method="POST">
+            <div class="form-actions no-color">
+                <p>
+                    Find by name: <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
+                    <button id=searchButton type="submit" class="btn btn-default">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>|
+                    <a id=eraseSearch asp-action="Index"><i class="fa-solid fa-eraser"></i></a>
+                </p>
+            </div>
 
-    <input type="hidden" id="sortOrder" name="sortOrder" value="@ViewData["CurrentSort"]" />
-    <input type="hidden" id="pageNumber" name="pageNumber" value="@Model.PageIndex" />
-    <input type="hidden" id="rowsOnEachPage" name="rowsOnEachPage" value="@ViewData["rowsOnEachPage"]" />
+            <input type="hidden" id="sortOrder" name="sortOrder" value="@ViewData["CurrentSort"]" />
+            <input type="hidden" id="pageNumber" name="pageNumber" value="@Model.PageIndex" />
+            <input type="hidden" id="rowsOnEachPage" name="rowsOnEachPage" value="@ViewData["rowsOnEachPage"]" />
 
-</form>
+        </form>
+
+    </div>
+</div>
+
 
 <table class="table table-hover">
     <thead>
@@ -62,7 +73,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr onclick="location.href ='@(Url.Action("Details", "Contacts", new { id = item.ContactId}))'" >
+            <tr onclick="location.href ='@(Url.Action("Details", "Contacts", new { id = item.ContactId}))'">
                 <td>
                     @Html.DisplayFor(modelItem => item.Firstname)
                 </td>
@@ -101,14 +112,20 @@
     var rowsOnEachPage = (int?)@ViewData["rowsOnEachPage"] ?? 8;
 }
 
-<button id="btnPrev" type="button" class="btn btn-primary @prevDisabled" @prevDisabled>Previous</button>
-<button id="btnNext" type="button" class="btn btn-primary @nextDisabled" @nextDisabled>Next</button>
+<div class="d-flex">
+    <div class="flex-grow-1 ps-2">
+        <select id="ddNumPages" class="form-select form-select-sm">
+            <option selected="@(rowsOnEachPage == 8)" value="8">8</option>
+            <option selected="@(rowsOnEachPage == 16)" value="16">16</option>
+            <option selected="@(rowsOnEachPage == 32)" value="32">32</option>
+        </select>
+    </div>
+    <div class="flex-grow-1 text-end pe-2">
+        <button id="btnPrev" type="button" class="btn btn-primary @prevDisabled" @prevDisabled>Previous</button>
+        <button id="btnNext" type="button" class="btn btn-primary @nextDisabled" @nextDisabled>Next</button>
+    </div>
+</div>
 
-<select id="ddNumPages" class="form-select form-select-sm">
-    <option selected="@(rowsOnEachPage == 8)" value="8">8</option>
-    <option selected="@(rowsOnEachPage == 16)" value="16">16</option>
-    <option selected="@(rowsOnEachPage == 32)" value="32">32</option>
-</select>
 
 @section Scripts {
 <script>
