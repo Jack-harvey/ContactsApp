@@ -27,6 +27,19 @@ namespace ContactsApp.Controllers
             return Json(userIdInDb);
         }
 
+        public string ThemeNameFromDbForLayout()
+        {
+
+            int fakeUserId = 2;
+            var userIdInDb = _context.Users.Find(fakeUserId);
+
+            if (userIdInDb == null)
+                return "";
+            if (userIdInDb.ThemeSelection == null)
+                return "";
+            return userIdInDb.ThemeSelection.ToString();
+        }
+
         public IActionResult Index()
         {
             return View();
