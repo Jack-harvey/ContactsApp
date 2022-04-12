@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ContactsApp.Models
 {
-    [Keyless]
+    //[Keyless]
     public partial class User
     {
         [Column("userId")]
+        [Key]
         public int UserId { get; set; }
         [Column("userName")]
         [StringLength(255)]

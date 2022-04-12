@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Contacts "@ViewBag.thisisadumbthing"</title>
+    <title>@ViewData["Title"] - Contacts</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ContactsApp.styles.css" asp-append-version="true" />
@@ -21,7 +21,7 @@
     </form>
 </div>
 
-<body class=dracula-theme>
+<body class="@ViewData["userTheme"]">
     <header>
         <nav id="sharedNavBar" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -65,8 +65,8 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            <script src="~/lib/jquery/dist/jquery.min.js"></script>
-            <script src="~/js/pageLoadThemeLoad.js"></script>
+@*            <script src="~/lib/jquery/dist/jquery.min.js"></script>
+            <script src="~/js/pageLoadThemeLoad.js"></script>*@
             @RenderBody()
         </main>
     </div>
@@ -76,12 +76,12 @@
             &copy; 2022 - Contacts - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @*<script src="~/js/pageLoadThemeLoad.js"></script>*@
-    <script src="~/js/themeSwitch.js"></script>
-    <script src="~/js/userLoadChangeTheme.js"></script>
+    <script src="~/js/themeSwitch.js" asp-append-version="true"></script>
+    @*<script src="~/js/userLoadChangeTheme.js"></script>*@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

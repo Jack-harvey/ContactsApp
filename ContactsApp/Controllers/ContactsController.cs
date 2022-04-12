@@ -11,9 +11,11 @@ using ContactsApp.Data;
 using ContactsApp.Models;
 using FileSignatures;
 using FileSignatures.Formats;
+using ContactsApp.Library;
 
 namespace ContactsApp.Controllers
 {
+    [ServiceFilter(typeof(Library.UserThemeFilterService))]
     public class ContactsController : Controller
     {
         private readonly ILogger<ContactsController> _logger;

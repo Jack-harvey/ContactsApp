@@ -20,11 +20,14 @@ try
         .AddControllersWithViews();
         //.AddRazorRuntimeCompilation();
 
+
     // NLog: Setup NLog for Dependency injection
     builder.Logging.ClearProviders();
     builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
     builder.Host.UseNLog();
-    
+
+    builder.Services.AddScoped<ContactsApp.Library.UserThemeFilterService>();
+
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
