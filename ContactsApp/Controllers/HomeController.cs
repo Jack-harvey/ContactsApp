@@ -27,17 +27,40 @@ namespace ContactsApp.Controllers
             return Json(userIdInDb);
         }
 
-        public string ThemeNameFromDbForLayout()
+        //public string ThemeNameFromDbForLayout()
+        //{
+
+        //    int fakeUserId = 2;
+        //    var userIdInDb = _context.Users.Find(fakeUserId);
+
+        //    if (userIdInDb == null)
+        //        return "";
+        //    if (userIdInDb.ThemeSelection == null)
+        //        return "";
+        //    return userIdInDb.ThemeSelection.ToString();
+        //}
+
+        public void SaveNewThemePreference(int userId, string themePreference)
         {
+            var users = _context.Users;
+            User userToUpdate = users.Find(userId);
 
-            int fakeUserId = 2;
-            var userIdInDb = _context.Users.Find(fakeUserId);
+            if (userToUpdate == null)
+                return;
 
-            if (userIdInDb == null)
-                return "";
-            if (userIdInDb.ThemeSelection == null)
-                return "";
-            return userIdInDb.ThemeSelection.ToString();
+            if (themePreference == "dracula-theme")
+            {
+                userToUpdate.ThemeSelection = "Dracula";
+                _context.Update(userToUpdate);
+                _context.SaveChanges();
+            }
+            if (themePreference == "atom-one-dark-theme")
+            {
+                userToUpdate.ThemeSelection = "atomOneDark";
+                _context.Update(userToUpdate);
+                _context.SaveChanges();
+
+            }
         }
 
         public IActionResult Index()
@@ -71,5 +94,7 @@ namespace ContactsApp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
     }
 }
