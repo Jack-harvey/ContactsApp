@@ -40,26 +40,31 @@ namespace ContactsApp.Controllers
         //    return userIdInDb.ThemeSelection.ToString();
         //}
 
-        public void SaveNewThemePreference(int userId, string themePreference)
+        public JsonResult SaveNewThemePreference(int userId, string themePreference)
         {
             var users = _context.Users;
-            User userToUpdate = users.Find(userId);
+            var userToUpdate = users.Find(userId);
 
             if (userToUpdate == null)
-                return;
+                return Json(new { result = 0, message = "Congrats, it's a baby Null... 🥰" });
 
             if (themePreference == "dracula-theme")
             {
                 userToUpdate.ThemeSelection = "Dracula";
                 _context.Update(userToUpdate);
                 _context.SaveChanges();
+                return Json(new { result = 1, theme = "dracula-theme", message = "It's dracula baby!" });
             }
             if (themePreference == "atom-one-dark-theme")
             {
                 userToUpdate.ThemeSelection = "atomOneDark";
                 _context.Update(userToUpdate);
                 _context.SaveChanges();
-
+                return Json(new { result = 1, theme = "atom-one-dark-theme", message = "Click change theme again, you did it wrong." });
+            }
+            else
+            {
+                return Json(new { result = 0, message = "Invalid theme"});
             }
         }
 
