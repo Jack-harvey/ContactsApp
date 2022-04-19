@@ -159,8 +159,14 @@ main {
   background-color: var(--contrastBackground);
 }
 
+#theme-toast {
+    background-color: var(--mainBackground) !important;
+    border-color: var(--accentSecondary);
+    color: var(--fontColor);
+}
+
 input {
-  color: var(--accentSecondary);
+    color: var(--accentSecondary);
 }
 
 body {

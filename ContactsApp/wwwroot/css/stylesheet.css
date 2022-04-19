@@ -19,8 +19,12 @@
   font-size: 17px;
 }
 
+#userLoginSelect {
+    width: auto;
+}
+
 #draculaBat {
-  font-family: Arial;
+    font-family: Arial;
 }
 
 #theme-toggle {
@@ -48,3 +52,4 @@ th a {
 tr {
   cursor: pointer;
 }
+
